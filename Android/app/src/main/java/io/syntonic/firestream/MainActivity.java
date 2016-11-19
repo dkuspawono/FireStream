@@ -3,9 +3,7 @@ package io.syntonic.firestream;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Parcelable;
-import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -13,14 +11,12 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AutoCompleteTextView;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,7 +26,6 @@ import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.spotify.sdk.android.authentication.AuthenticationClient;
@@ -38,22 +33,31 @@ import com.spotify.sdk.android.authentication.AuthenticationRequest;
 import com.spotify.sdk.android.authentication.AuthenticationResponse;
 import com.squareup.picasso.Picasso;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
-import java.util.UUID;
 
+import kaaes.spotify.webapi.android.models.Pager;
+import kaaes.spotify.webapi.android.models.PlaylistTrack;
+import kaaes.spotify.webapi.android.models.Track;
+import kaaes.spotify.webapi.android.models.UserPrivate;
 import me.zhanghai.android.materialprogressbar.MaterialProgressBar;
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 public class MainActivity extends AppCompatActivity {
 
     public static final String FIREBASE_DATABASE_TABLE_PARTIES = "parties";
+    public static final String EXTRA_SPOTIFY_TOKEN = "EXTRA_SPOTIFY_TOKEN";
 
     private static final String TAG = "MainActivity";
-    private static final int SPOTIFY_REQUEST_CODE = 1337;
+    private static final int REQUEST_CODE_SPOTIFY_LOGIN = 1337;
     private static final String SPOTIFY_REDIRECT_URI = "firestream://callback/";
+    private static final int REQUEST_CODE_CREATE_PARTY = 1;
 
     private ArrayList<Party> parties = new ArrayList<>();
     private PartyAdapter partyAdapter;
@@ -83,6 +87,7 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(linearLayoutManager);
 
         subscribeToParties();
+        displayParties();
 
         FloatingActionButton createPartyButton = (FloatingActionButton) findViewById(R.id.fab_create_party);
         createPartyButton.setOnClickListener(new View.OnClickListener() {
@@ -93,11 +98,9 @@ public class MainActivity extends AppCompatActivity {
 
                 builder.setScopes(new String[]{"streaming"});
                 AuthenticationRequest request = builder.build();
-                AuthenticationClient.openLoginActivity(MainActivity.this, SPOTIFY_REQUEST_CODE, request);
+                AuthenticationClient.openLoginActivity(MainActivity.this, REQUEST_CODE_SPOTIFY_LOGIN, request);
             }
         });
-
-//        addTestParty();
     }
 
     private void subscribeToParties() {
@@ -158,9 +161,45 @@ public class MainActivity extends AppCompatActivity {
 
     private void displayParties() {
         if (parties.size() > 0) {
+
+            // Sort by your parties, then # attendees
+            if (((MyApplication) getApplicationContext()).spotifyUserId != null) {
+                ArrayList<Party> myParties = new ArrayList<>();
+                ArrayList<Party> otherParties = new ArrayList<>();
+                for (int i = 0; i < parties.size(); i++) {
+                    if (parties.get(i).hostSpotifyId != null && ((MyApplication) getApplicationContext()).spotifyUserId.equals(parties.get(i).hostSpotifyId))
+                        myParties.add(parties.get(i));
+                    else
+                        otherParties.add(parties.get(i));
+                }
+                Collections.sort(myParties, new Comparator<Party>() {
+                    @Override
+                    public int compare(Party l, Party r) {
+                        return r.attendees - l.attendees;
+                    }
+                });
+                Collections.sort(otherParties, new Comparator<Party>() {
+                    @Override
+                    public int compare(Party l, Party r) {
+                        return r.attendees - l.attendees;
+                    }
+                });
+                parties = new ArrayList<>();
+                parties.addAll(myParties);
+                parties.addAll(otherParties);
+            } else {
+                Collections.sort(parties, new Comparator<Party>() {
+                    @Override
+                    public int compare(Party l, Party r) {
+                        return r.attendees - l.attendees;
+                    }
+                });
+            }
+
             setAdapter();
             progressBar.setVisibility(View.GONE);
             recyclerView.setVisibility(View.VISIBLE);
+            emptyListTextView.setVisibility(View.GONE);
         } else {
             progressBar.setVisibility(View.GONE);
             emptyListTextView.setVisibility(View.VISIBLE);
@@ -170,18 +209,6 @@ public class MainActivity extends AppCompatActivity {
                 emptyListTextView.setText("Could not find any Parties that match this search");
             recyclerView.setVisibility(View.GONE);
         }
-    }
-
-    private void addTestParty() {
-        final Party newParty = new Party("test");
-        Utils.getDatabase().getReference(FIREBASE_DATABASE_TABLE_PARTIES).child(newParty.id).setValue(
-                newParty, new DatabaseReference.CompletionListener() {
-                    @Override
-                    public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                        Toast.makeText(MainActivity.this, databaseError == null ?
-                                "Party Created!" : "Error. Try again later.", Toast.LENGTH_SHORT).show();
-                    }
-                });
     }
 
     private void setAdapter() {
@@ -271,20 +298,51 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
 
-        if (requestCode == SPOTIFY_REQUEST_CODE) {
+        if (requestCode == REQUEST_CODE_SPOTIFY_LOGIN) {
             AuthenticationResponse response = AuthenticationClient.getResponse(resultCode, intent);
 
             switch (response.getType()) {
                 case TOKEN:
+
+                    ((MyApplication)getApplicationContext()).spotifyApi.setAccessToken(response.getAccessToken());
+                    ((MyApplication)getApplicationContext()).spotifyApi.getService().getMe(new Callback<UserPrivate>() {
+                        @Override
+                        public void success(UserPrivate userPrivate, Response response) {
+                            ((MyApplication)getApplicationContext()).spotifyUserId = userPrivate.id;
+                            displayParties();
+                        }
+
+                        @Override
+                        public void failure(RetrofitError error) {
+
+                        }
+                    });
+
                     Intent createPartyIntent = new Intent(this, CreatePartyActivity.class);
-                    startActivity(createPartyIntent);
+                    startActivityForResult(createPartyIntent, REQUEST_CODE_CREATE_PARTY);
                     break;
                 case ERROR:
                     Toast.makeText(this, "Hosting a party requires Spotfiy Premium", Toast.LENGTH_LONG).show();
                     break;
                 default:
             }
+        } else if (requestCode == REQUEST_CODE_CREATE_PARTY) {
+            if (resultCode == RESULT_OK) {
+                final Party party = intent.getParcelableExtra(CreatePartyActivity.EXTRA_KEY_PARTY);
+                createParty(party);
+            }
         }
+    }
+
+    private void createParty(Party party) {
+        Utils.getDatabase().getReference(FIREBASE_DATABASE_TABLE_PARTIES).child(party.id).setValue(
+                party, new DatabaseReference.CompletionListener() {
+                    @Override
+                    public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                        Toast.makeText(MainActivity.this, databaseError == null ?
+                                "Party Created!" : "Error. Try again later.", Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 
     public class PartyAdapter extends RecyclerView.Adapter<PartyAdapter.PartyViewHolder> {
@@ -326,8 +384,21 @@ public class MainActivity extends AppCompatActivity {
 
             holder.partyCount.setText(String.valueOf(party.attendees));
 
-            if (song != null)
+            if (song != null) {
                 Picasso.with(context).load(song.album_url).into(holder.partyCurrentImage);
+                holder.partyCurrentImage.setVisibility(View.VISIBLE);
+            } else {
+                holder.partyCurrentImage.setVisibility(View.GONE);
+            }
+
+            if (party.hostSpotifyId != null && ((MyApplication) getApplicationContext()).spotifyUserId != null
+                    && ((MyApplication) getApplicationContext()).spotifyUserId.equals(party.hostSpotifyId)) {
+                // We are the host of this party
+                if (song != null) {
+                    holder.partyDetails.setText("Host: You | " + "Now Playing: " + party.queue.get(0).name);
+                }
+                holder.itemView.setBackgroundColor(getResources().getColor(R.color.colorAccent));
+            }
         }
 
         public class PartyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {

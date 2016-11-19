@@ -32,15 +32,31 @@
                 android:text="Party Information"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
                 android:textSize="18sp" />
+
+            <com.rengwuxian.materialedittext.MaterialEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Host Name (displayed to party members)"
+                app:met_textColor="@android:color/white"
+                app:met_textColorHint="#757575"
+                app:met_primaryColor="@color/colorAccent"
+                app:met_underlineColor="#fffffe"
+                app:met_floatingLabelTextColor="#fffffe"
+                app:met_floatingLabel="highlight"
+                android:inputType="text"
+                android:id="@+id/et_party_host"/>
 
             <com.rengwuxian.materialedittext.MaterialEditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Party Name"
                 app:met_textColor="@android:color/white"
-                app:met_textColorHint="@android:color/white"
+                app:met_textColorHint="#757575"
+                app:met_primaryColor="@color/colorAccent"
                 app:met_underlineColor="#fffffe"
+                app:met_floatingLabelTextColor="#fffffe"
                 app:met_floatingLabel="highlight"
                 android:inputType="text"
                 android:id="@+id/et_party_name"/>
@@ -50,8 +66,10 @@
                 android:layout_height="wrap_content"
                 android:hint="Password (optional)"
                 app:met_textColor="@android:color/white"
-                app:met_textColorHint="@android:color/white"
+                app:met_textColorHint="#757575"
+                app:met_primaryColor="@color/colorAccent"
                 app:met_underlineColor="#fffffe"
+                app:met_floatingLabelTextColor="#fffffe"
                 app:met_floatingLabel="highlight"
                 android:inputType="textPassword"
                 android:fontFamily="sans-serif"
