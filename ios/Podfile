@@ -7,4 +7,5 @@ target 'FireStream' do
   pod 'Firebase/Core'
   pod 'Firebase/Messaging'
   pod 'Firebase/Database'
+  pod 'Material', :git => 'https://github.com/CosmicMind/Material.git', :branch => 'development';
 end

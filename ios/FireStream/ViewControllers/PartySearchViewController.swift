@@ -7,13 +7,56 @@
 //
 
 import UIKit
+import Firebase
+import Material
 
-class PartySearchViewController: UIViewController {
+class PartySearchViewController: MaterialViewController, UITableViewDelegate, UITableViewDataSource, UISearchResultsUpdating {
+    
+    let FIREBASE_DATABASE_TABLE_PARTIES = "parites"
+    
+    @IBOutlet weak var tableView: UITableView!
+    @IBOutlet weak var superViewSearchBar: UIView!
+    
+    let searchController = UISearchController(searchResultsController: nil)
+    var parties: [Party] = [Party]()
 
+    override var showAppBarShadow: Bool {
+        get { return false }
+        set { }
+    }
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
+        (self.navigationController as? MaterialNavigationController)?.updateAppBar()
+        tableView.tableFooterView = UIView(frame: CGRect.zero)
+        tableView.backgroundColor = UIColor.colorBg
+        tableView.register(UINib(nibName: "PartyTableViewCell", bundle: nil), forCellReuseIdentifier: "partyCell")
+        
+        searchController.searchResultsUpdater = self
+        searchController.hidesNavigationBarDuringPresentation = false
+        searchController.dimsBackgroundDuringPresentation = false
+        searchController.searchBar.sizeToFit()
+        superViewSearchBar.addSubview(searchController.searchBar)
+        self.definesPresentationContext = true
+        
+        if let textField = searchController.searchBar.value(forKey: "searchField") as? UITextField {
+            textField.adjustsFontSizeToFitWidth = true
+            textField.borderStyle = .none
+            textField.textColor = .black
+            textField.tintColor = .black
+            textField.backgroundColor = .white
+            textField.layer.cornerRadius = 2
+        }
+        searchController.searchBar.layer.cornerRadius = 2
+        searchController.searchBar.searchBarStyle = .minimal
+        searchController.searchBar.tintColor = .white
+        searchController.searchBar.backgroundColor = nil
+        
+        tableView.rowHeight = UITableViewAutomaticDimension
+        tableView.estimatedRowHeight = 90
+        
+        subscribeToParties()
     }
 
     override func didReceiveMemoryWarning() {
@@ -22,14 +65,79 @@ class PartySearchViewController: UIViewController {
     }
     
 
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
+    // MARK: Fetch Data
+    func subscribeToParties() {
+        parties.removeAll()
+        
+        let db = Utils.getDatabase().reference(fromURL: "https://firestream-4e998.firebaseio.com/parties")
+        let q = db.queryOrdered(byChild: "attendees").queryLimited(toLast: 50)
+        
+        q.observe(.childAdded, with: { snapshot in
+            guard let partyDict = snapshot.value as? [String:Any] else { return }
+            let party = Party(dict: partyDict)
+            self.parties.append(party)
+            self.tableView.reloadData()
+        }, withCancel: { (error) in
+            print("Database error: \(error)")
+        })
+        q.observe(.childChanged, with: { (snapshot) in
+            guard let partyDict = snapshot.value as? [String:Any] else { return }
+            let party = Party(dict: partyDict)
+            for i in 0..<self.parties.count {
+                if self.parties[i].id == party.id {
+                    self.parties[i] = party
+                    self.tableView.reloadRows(at: [IndexPath(row: i, section: 0)], with: .automatic)
+                    break
+                }
+            }
+        }, withCancel: { (error) in
+            print("Database error: \(error)")
+        })
+    
+        q.observe(.childRemoved, with: { (snapshot) in
+            guard let partyDict = snapshot.value as? [String:Any] else { return }
+            let party = Party(dict: partyDict)
+            for i in 0..<self.parties.count {
+                if self.parties[i].id == party.id {
+                    self.parties.remove(at: i)
+                    self.tableView.deleteRows(at: [IndexPath(row: i, section: 0)], with: .automatic)
+                    break
+                }
+            }
+        }, withCancel: { (error) in
+            print("Database error: \(error)")
+        })
+        
+        q.observe(.childMoved, with: { (snapshot) in
+            
+        }, withCancel: { (error) in
+            print("Database error: \(error)")
+        })
     }
-    */
-
+    
+    // MARK: UITableViewDataSource
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return 1
+    }
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return parties.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "partyCell") as! PartyTableViewCell
+        let party = parties[indexPath.row]
+        cell.lblName.text = party.name
+        cell.lblHost.text = party.hostName
+        return cell
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        
+    }
+    
+    // MARK: UISearchResultsUpdating
+    func updateSearchResults(for searchController: UISearchController) {
+        
+    }
 }
