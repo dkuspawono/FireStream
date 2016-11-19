@@ -1,16 +1,84 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="11134" systemVersion="15F34" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="11542" systemVersion="15G1108" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11106"/>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11524"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
-        <view contentMode="scaleToFill" id="iN0-l3-epB">
-            <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+        <view contentMode="scaleToFill" id="iN0-l3-epB" customClass="PartyTableViewCell" customModule="FireStream" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="375" height="96"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="TDO-Ew-RZI">
+                    <rect key="frame" x="16" y="16" width="64" height="64"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="64" id="BeH-a3-qSL"/>
+                        <constraint firstAttribute="width" constant="64" id="sEZ-gC-MjB"/>
+                    </constraints>
+                </imageView>
+                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="EjW-ma-zUX">
+                    <rect key="frame" x="335" y="36" width="24" height="24"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="24" id="TLl-zR-Z0k"/>
+                        <constraint firstAttribute="width" constant="24" id="eP9-78-M1b"/>
+                    </constraints>
+                </imageView>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="CMt-2S-xZz">
+                    <rect key="frame" x="94" y="28.5" width="128.5" height="39.5"/>
+                    <subviews>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Party Name" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jJh-ha-R19">
+                            <rect key="frame" x="0.0" y="0.0" width="128.5" height="17"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                            <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="0.87" colorSpace="calibratedRGB"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Hosted By: Host Name" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lQA-7U-pRz">
+                            <rect key="frame" x="0.0" y="25" width="128.5" height="14.5"/>
+                            <fontDescription key="fontDescription" name=".AppleSystemUIFont" family=".AppleSystemUIFont" pointSize="12"/>
+                            <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="0.87" colorSpace="calibratedRGB"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                    </subviews>
+                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    <constraints>
+                        <constraint firstAttribute="trailing" secondItem="jJh-ha-R19" secondAttribute="trailing" id="64T-Lu-Nq5"/>
+                        <constraint firstAttribute="bottom" secondItem="lQA-7U-pRz" secondAttribute="bottom" id="MIi-6v-4uk"/>
+                        <constraint firstItem="jJh-ha-R19" firstAttribute="top" secondItem="CMt-2S-xZz" secondAttribute="top" id="OAM-tV-VPu"/>
+                        <constraint firstItem="lQA-7U-pRz" firstAttribute="top" secondItem="jJh-ha-R19" secondAttribute="bottom" constant="8" id="o9W-nr-ih7"/>
+                        <constraint firstItem="lQA-7U-pRz" firstAttribute="leading" secondItem="CMt-2S-xZz" secondAttribute="leading" id="q9E-tf-3im"/>
+                        <constraint firstAttribute="trailing" secondItem="lQA-7U-pRz" secondAttribute="trailing" id="uKI-MV-bIz"/>
+                        <constraint firstItem="jJh-ha-R19" firstAttribute="leading" secondItem="CMt-2S-xZz" secondAttribute="leading" id="veM-tg-TSQ"/>
+                    </constraints>
+                </view>
+            </subviews>
             <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <constraints>
+                <constraint firstItem="TDO-Ew-RZI" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" constant="16" id="BWX-Db-NUy"/>
+                <constraint firstItem="EjW-ma-zUX" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="CMt-2S-xZz" secondAttribute="trailing" constant="16" id="Hhr-Ok-QE6"/>
+                <constraint firstAttribute="trailing" secondItem="EjW-ma-zUX" secondAttribute="trailing" constant="16" id="KF7-K8-G5g"/>
+                <constraint firstItem="TDO-Ew-RZI" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="16" id="L90-bD-zGL"/>
+                <constraint firstAttribute="bottom" secondItem="TDO-Ew-RZI" secondAttribute="bottom" constant="16" id="PEK-j8-iBD"/>
+                <constraint firstItem="CMt-2S-xZz" firstAttribute="top" relation="greaterThanOrEqual" secondItem="iN0-l3-epB" secondAttribute="top" constant="16" id="SpP-YU-MzL"/>
+                <constraint firstItem="TDO-Ew-RZI" firstAttribute="centerY" secondItem="iN0-l3-epB" secondAttribute="centerY" id="WQ6-7N-cY3"/>
+                <constraint firstItem="CMt-2S-xZz" firstAttribute="leading" secondItem="TDO-Ew-RZI" secondAttribute="trailing" constant="14" id="aPH-pd-cC9"/>
+                <constraint firstItem="EjW-ma-zUX" firstAttribute="centerY" secondItem="iN0-l3-epB" secondAttribute="centerY" id="jSi-qu-Uet"/>
+                <constraint firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="CMt-2S-xZz" secondAttribute="bottom" constant="16" id="rSx-2W-UUa"/>
+                <constraint firstItem="CMt-2S-xZz" firstAttribute="centerY" secondItem="iN0-l3-epB" secondAttribute="centerY" id="uVz-GX-9OB"/>
+            </constraints>
+            <nil key="simulatedStatusBarMetrics"/>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <connections>
+                <outlet property="imgAlbumArt" destination="TDO-Ew-RZI" id="sHz-hg-EkL"/>
+                <outlet property="lblHost" destination="lQA-7U-pRz" id="Ajx-6T-cSW"/>
+                <outlet property="lblName" destination="jJh-ha-R19" id="rRc-1D-M3g"/>
+            </connections>
+            <point key="canvasLocation" x="4.5" y="44"/>
         </view>
     </objects>
 </document>

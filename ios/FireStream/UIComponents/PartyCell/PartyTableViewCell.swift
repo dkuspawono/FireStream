@@ -9,6 +9,9 @@
 import UIKit
 
 class PartyTableViewCell: UITableViewCell {
+    @IBOutlet weak var imgAlbumArt: UIImageView!
+    @IBOutlet weak var lblName: UILabel!
+    @IBOutlet weak var lblHost: UILabel!
 
     override func awakeFromNib() {
         super.awakeFromNib()

@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11535.1" systemVersion="15G1108" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="U1e-Gg-Cfu">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11542" systemVersion="15G1108" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="U1e-Gg-Cfu">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11523"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11524"/>
+        <capability name="Constraints with non-1.0 multipliers" minToolsVersion="5.1"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -64,7 +65,54 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="117.59999999999999" y="122.78860569715144"/>
+            <point key="canvasLocation" x="-418.39999999999998" y="151.57421289355324"/>
+        </scene>
+        <!--View Controller-->
+        <scene sceneID="ASJ-kp-g3J">
+            <objects>
+                <viewController id="bVN-1h-nni" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="LHa-UF-72I"/>
+                        <viewControllerLayoutGuide type="bottom" id="a8D-4h-No6"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="kW0-Nz-2OO">
+                        <rect key="frame" x="0.0" y="64" width="375" height="603"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Name" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="BBq-bK-2zM">
+                                <rect key="frame" x="62.5" y="16" width="250" height="40"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="40" id="9Lb-YE-nXo"/>
+                                </constraints>
+                                <nil key="textColor"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </textField>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="password (Optional)" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Gaq-MR-dVt">
+                                <rect key="frame" x="62.5" y="72" width="250" height="40"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="40" id="XvW-aP-YvW"/>
+                                </constraints>
+                                <nil key="textColor"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits" secureTextEntry="YES"/>
+                            </textField>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="BBq-bK-2zM" firstAttribute="width" secondItem="kW0-Nz-2OO" secondAttribute="width" multiplier="2:3" id="1bn-52-tef"/>
+                            <constraint firstItem="BBq-bK-2zM" firstAttribute="top" secondItem="LHa-UF-72I" secondAttribute="bottom" constant="16" id="Jgz-QO-cVJ"/>
+                            <constraint firstItem="BBq-bK-2zM" firstAttribute="centerX" secondItem="kW0-Nz-2OO" secondAttribute="centerX" id="S4G-fs-m5G"/>
+                            <constraint firstItem="Gaq-MR-dVt" firstAttribute="width" secondItem="BBq-bK-2zM" secondAttribute="width" id="SWn-hl-rhH"/>
+                            <constraint firstItem="Gaq-MR-dVt" firstAttribute="top" secondItem="BBq-bK-2zM" secondAttribute="bottom" constant="16" id="g4T-Fk-gM5"/>
+                            <constraint firstItem="Gaq-MR-dVt" firstAttribute="centerX" secondItem="kW0-Nz-2OO" secondAttribute="centerX" id="lZx-OU-N7y"/>
+                        </constraints>
+                    </view>
+                    <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" translucent="NO" prompted="NO"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="KYi-On-lVv" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-1167" y="802"/>
         </scene>
     </scenes>
 </document>
