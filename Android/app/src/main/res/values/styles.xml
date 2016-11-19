@@ -1,0 +1,24 @@
+<resources>
+    <!-- inherit from the AppCompat theme -->
+    <style name="AppTheme" parent="Theme.AppCompat.NoActionBar">
+        <!-- your app branding color for the app bar -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <!-- darker variant for the status bar and contextual app bars -->
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <!-- theme UI controls like checkboxes and text fields -->
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <style name="SplashTheme" parent="Theme.AppCompat.NoActionBar">
+        <item name="android:windowBackground">@drawable/splash</item>
+    </style>
+
+    <style name="ButtonRed" parent="Widget.AppCompat.Button.Colored">
+        <item name="colorButtonNormal">@color/colorRed</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+    <style name="ButtonGreen" parent="Widget.AppCompat.Button.Colored">
+        <item name="colorButtonNormal">@color/colorGreen</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+</resources>

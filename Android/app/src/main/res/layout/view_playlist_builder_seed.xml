@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <Spinner
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:id="@+id/spinner_seed_type" />
+
+    <com.rengwuxian.materialedittext.MaterialEditText
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        app:met_textColor="@android:color/white"
+        app:met_textColorHint="@android:color/white"
+        app:met_underlineColor="#fffffe"
+        app:met_floatingLabel="highlight"
+        android:inputType="text"
+        android:id="@+id/et_seed_info"/>
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        app:srcCompat="@drawable/ic_add_white_24dp"
+        android:id="@+id/ib_add_seed" />
+</LinearLayout>

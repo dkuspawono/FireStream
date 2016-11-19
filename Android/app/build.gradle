@@ -1,0 +1,52 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 24
+    buildToolsVersion "25.0.0"
+    defaultConfig {
+        applicationId "io.syntonic.firestream"
+        minSdkVersion 16
+        targetSdkVersion 24
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+repositories {
+    mavenCentral()
+    flatDir {
+        dirs 'libs'
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+
+    compile 'com.android.support:appcompat-v7:24.0.0'
+    compile 'com.android.support:recyclerview-v7:24.0.0'
+    testCompile 'junit:junit:4.12'
+
+    compile 'com.google.firebase:firebase-core:9.8.0'
+    compile 'com.google.firebase:firebase-messaging:9.8.0'
+    compile 'com.google.firebase:firebase-database:9.8.0'
+
+    compile 'com.spotify.sdk:spotify-auth:beta23-noconnect-2.20b@aar'
+    compile 'com.spotify.sdk:spotify-player:beta23-noconnect-2.20b@aar'
+
+    compile 'me.zhanghai.android.materialprogressbar:library:1.1.7'
+    compile 'com.rengwuxian.materialedittext:library:2.1.4'
+    compile 'com.github.clans:fab:1.6.4'
+    compile 'com.squareup.picasso:picasso:2.5.2'
+}
+
+apply plugin: 'com.google.gms.google-services'

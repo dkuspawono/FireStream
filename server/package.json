@@ -1,0 +1,24 @@
+{
+  "name": "fireserver",
+  "version": "1.0.0",
+  "description": "Server for FireStream app.",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SyntonicApps/FireStream.git"
+  },
+  "author": "Syntonic",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/SyntonicApps/FireStream/issues"
+  },
+  "homepage": "https://github.com/SyntonicApps/FireStream#readme",
+  "dependencies": {
+    "express": "^4.14.0",
+    "firebase": "^3.5.3",
+    "socket.io": "^1.5.1"
+  }
+}

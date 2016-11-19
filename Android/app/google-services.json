@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "288293418041",
+    "firebase_url": "https://firestream-4e998.firebaseio.com",
+    "project_id": "firestream-4e998",
+    "storage_bucket": "firestream-4e998.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:288293418041:android:1c593ab4b02e9aad",
+        "android_client_info": {
+          "package_name": "io.syntonic.firestream"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "288293418041-t75qnsogh21aeibnrbkgbflpcip3f6lt.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBDlzcTeK4FU7YZkUBO3hiI0_ZuhweKSXU"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
