@@ -1,23 +1,33 @@
 package io.syntonic.firestream;
 
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.InputType;
+import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.firebase.database.ChildEventListener;
+import com.github.nkzawa.socketio.client.IO;
+import com.github.nkzawa.socketio.client.Socket;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.spotify.sdk.android.player.Config;
 import com.spotify.sdk.android.player.ConnectionStateCallback;
@@ -28,14 +38,19 @@ import com.spotify.sdk.android.player.Spotify;
 import com.spotify.sdk.android.player.SpotifyPlayer;
 import com.squareup.picasso.Picasso;
 
+import java.net.URISyntaxException;
 import java.util.ArrayList;
-import java.util.Iterator;
 
 public class PartyActivity extends AppCompatActivity implements ConnectionStateCallback, Player.NotificationCallback {
 
     private static final String TAG = "PartyActivity";
     Party party;
     private Player mPlayer;
+    private Socket mSocket;
+
+    private QueueAdapter mAdapter;
+    private RecyclerView recyclerView;
+    private LinearLayoutManager linearLayoutManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,8 +65,12 @@ public class PartyActivity extends AppCompatActivity implements ConnectionStateC
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         setTitle(party.name);
 
-        updateSong();
+        updateSongs();
         subscribeToParty();
+
+        recyclerView = (RecyclerView) findViewById(R.id.queue);
+        linearLayoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(linearLayoutManager);
 
         // If we are host, initialize player
         if (((MyApplication) getApplicationContext()).spotifyUserId != null && ((MyApplication) getApplicationContext()).spotifyUserId.equals(party.hostSpotifyId) &&
@@ -71,10 +90,19 @@ public class PartyActivity extends AppCompatActivity implements ConnectionStateC
                 }
             });
         }
+
+        // Connect to node socket
+        try {
+            mSocket = IO.socket(Utils.SOCKET_URL);
+            mSocket.connect();
+            mSocket.emit("joinParty", party.id);
+        } catch (Exception e) {
+            Log.d(TAG, e.getMessage());
+        }
     }
 
-    private void updateSong() {
-        if (party.queue == null || party.queue.size() == 0)
+    private void updateSongs() {
+        if (party == null || party.queue == null || party.queue.size() == 0)
             return;
 
         Song song = party.queue.get(0);
@@ -134,8 +162,8 @@ public class PartyActivity extends AppCompatActivity implements ConnectionStateC
                     party.isPlaying = true;
                     party.progress = 0;
                     updateParty();
-                    updateSong();
-                    if (mPlayer != null)
+                    updateSongs();
+                    if (mPlayer != null && party.queue.size() > 0)
                         mPlayer.playUri(null, "spotify:track:" + party.queue.get(0).id, 0, party.progress);
                 }
             });
@@ -147,8 +175,8 @@ public class PartyActivity extends AppCompatActivity implements ConnectionStateC
                     party.isPlaying = true;
                     party.progress = 0;
                     updateParty();
-                    updateSong();
-                    if (mPlayer != null)
+                    updateSongs();
+                    if (mPlayer != null && party.queue.size() > 0)
                         mPlayer.playUri(null, "spotify:track:" + party.queue.get(0).id, 0, party.progress);
                 }
             });
@@ -181,17 +209,42 @@ public class PartyActivity extends AppCompatActivity implements ConnectionStateC
                 }
             });
         }
+
+        setAdapter();
+    }
+
+    private void setAdapter() {
+        if (party.queue == null || recyclerView == null)
+            return;
+
+        if (mAdapter == null) {
+            mAdapter = new QueueAdapter(this, party.queue);
+            recyclerView.setAdapter(mAdapter);
+        } else {
+            int index = linearLayoutManager.findFirstVisibleItemPosition();
+            View v = recyclerView.getChildAt(0);
+            int top = (v == null) ? 0 : (v.getTop() - recyclerView.getPaddingTop());
+            mAdapter = new QueueAdapter(this, party.queue);
+            recyclerView.setAdapter(mAdapter);
+            linearLayoutManager.scrollToPositionWithOffset(index, top);
+        }
     }
 
     private void subscribeToParty() {
+        if (party == null)
+            return;
+
         final DatabaseReference db = Utils.getDatabase().getReference(MainActivity.FIREBASE_DATABASE_TABLE_PARTIES).child(party.id);
         db.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                if (party.queue.size() == 0)
+                    return;
+
                 Party p = dataSnapshot.getValue(Party.class);
                 String prevSong = party.queue.get(0).id;
                 party = p;
-                updateSong();
+                updateSongs();
                 if (!prevSong.equals(party.queue.get(0).id) && mPlayer != null)
                     mPlayer.playUri(null, "spotify:track:" + party.queue.get(0).id, 0, party.progress);
             }
@@ -230,11 +283,72 @@ public class PartyActivity extends AppCompatActivity implements ConnectionStateC
         return super.onOptionsItemSelected(item);
     }
 
+    public class QueueAdapter extends RecyclerView.Adapter<QueueAdapter.QueueViewHolder> {
+
+        private ArrayList<Song> mSongs;
+        private Context context;
+
+        public QueueAdapter(Context context, ArrayList<Song> mSongs) {
+            this.context = context;
+            this.mSongs = new ArrayList<>();
+            for (int i = 1; i < mSongs.size(); i++)
+                this.mSongs.add(mSongs.get(i));
+        }
+
+        @Override
+        public int getItemCount() {
+            return mSongs.size();
+        }
+
+        @Override
+        public QueueAdapter.QueueViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
+            View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.list_item_song, viewGroup, false);
+            QueueAdapter.QueueViewHolder vh = new QueueAdapter.QueueViewHolder(v);
+            return vh;
+        }
+
+        @Override
+        public void onBindViewHolder(QueueAdapter.QueueViewHolder holder, int position) {
+            final Song song = mSongs.get(position);
+
+            if (song.name != null)
+                holder.songName.setText(song.name);
+
+
+
+            String details = "";
+            if (song.artist != null)
+                details += song.artist + " | ";
+            details += millisToString(song.duration);
+
+            holder.songDetails.setText(details);
+        }
+
+        public class QueueViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+            TextView songName;
+            TextView songDetails;
+
+            QueueViewHolder(final View itemView) {
+                super(itemView);
+
+                itemView.setOnClickListener(this);
+                songName = (TextView) itemView.findViewById(R.id.tv_queue_song_name);
+                songDetails = (TextView) itemView.findViewById(R.id.tv_queue_song_details);
+            }
+
+            @Override
+            public void onClick(View view) {
+                int position = getAdapterPosition();
+
+            }
+        }
+    }
+
     @Override
     public void onLoggedIn() {
         Log.d(TAG, "User logged in");
 
-        if (mPlayer != null && party.isPlaying)
+        if (mPlayer != null && party.isPlaying && party.queue.size() > 0)
             mPlayer.playUri(null, "spotify:track:" + party.queue.get(0).id, 0, party.progress);
     }
 

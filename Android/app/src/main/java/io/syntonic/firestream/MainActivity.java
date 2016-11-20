@@ -114,7 +114,7 @@ public class MainActivity extends AppCompatActivity {
 
         final DatabaseReference db = Utils.getDatabase().getReference(FIREBASE_DATABASE_TABLE_PARTIES);
 
-        Query q = db.orderByChild("attendees").limitToLast(50);
+        Query q = db.orderByChild("name").limitToLast(50);
         q.addChildEventListener((new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
@@ -181,13 +181,13 @@ public class MainActivity extends AppCompatActivity {
                 Collections.sort(myParties, new Comparator<Party>() {
                     @Override
                     public int compare(Party l, Party r) {
-                        return r.attendees - l.attendees;
+                        return r.attendees.size() - l.attendees.size();
                     }
                 });
                 Collections.sort(otherParties, new Comparator<Party>() {
                     @Override
                     public int compare(Party l, Party r) {
-                        return r.attendees - l.attendees;
+                        return r.attendees.size() - l.attendees.size();
                     }
                 });
                 parties = new ArrayList<>();
@@ -197,7 +197,7 @@ public class MainActivity extends AppCompatActivity {
                 Collections.sort(parties, new Comparator<Party>() {
                     @Override
                     public int compare(Party l, Party r) {
-                        return r.attendees - l.attendees;
+                        return r.attendees.size() - l.attendees.size();
                     }
                 });
             }
@@ -388,11 +388,17 @@ public class MainActivity extends AppCompatActivity {
             if (party.name != null)
                 holder.partyName.setText(party.name);
 
-            if (party.hostName != null && song != null) {
-                holder.partyDetails.setText("Host: " + party.hostName + " | " + "Now Playing: " + party.queue.get(0).name);
-            }
+            String details = "";
+            if (party.hostName != null)
+                details += "Host: " + party.hostName;
+            if (party.hostName != null && song != null)
+                details += " | ";
+            if (song != null)
+                details += "Now Playing: " + song.name;
 
-            holder.partyCount.setText(String.valueOf(party.attendees));
+            holder.partyDetails.setText(details);
+
+            holder.partyCount.setText(String.valueOf(party.attendees.size()));
 
             if (song != null) {
                 Picasso.with(context).load(song.albumUrl).into(holder.partyCurrentImage);

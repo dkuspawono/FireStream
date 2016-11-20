@@ -48,14 +48,14 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Song Name"
+                    android:text=""
                     android:textSize="18sp"
                     android:id="@+id/tv_song_name" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Artist Name"
+                    android:text=""
                     android:textSize="14sp"
                     android:id="@+id/tv_song_artist" />
 
@@ -119,12 +119,18 @@
                 android:id="@+id/textView4" />
 
             <TextView
-                android:text="1:00"
+                android:text="0:00"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/tv_song_duration" />
         </LinearLayout>
 
     </LinearLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/queue"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:drawSelectorOnTop="true" />
 
 </LinearLayout>

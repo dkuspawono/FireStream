@@ -114,10 +114,13 @@ public class CreatePartyActivity extends AppCompatActivity {
                                             for (int i = 0; i < playlistTrackPager.items.size(); i++) {
                                                 Track track = playlistTrackPager.items.get(i).track;
                                                 String name = track.name;
+                                                if (name == null || name.isEmpty())
+                                                    continue;
+
                                                 String id = track.id;
                                                 String artist = "";
                                                 for (int a = 0; a < track.artists.size(); a++)
-                                                    artist += track.artists.get(a).name + (a == track.artists.size() - 1 ? "" : " | ");
+                                                    artist += track.artists.get(a).name + (a == track.artists.size() - 1 ? "" : ", ");
                                                 long duration = track.duration_ms;
 
                                                 String image = null;
@@ -278,14 +281,17 @@ public class CreatePartyActivity extends AppCompatActivity {
                                 for (int i = 0; i < recommendations.tracks.size(); i++) {
                                     Track track = recommendations.tracks.get(i);
                                     String name = track.name;
+                                    if (name == null || name.isEmpty())
+                                        continue;
+
                                     String id = track.id;
                                     String artist = "";
                                     long duration = track.duration_ms;
                                     for (int a = 0; a < track.artists.size(); a++)
-                                        artist += track.artists.get(a).name + (a == track.artists.size() - 1 ? "" : " | ");
+                                        artist += track.artists.get(a).name + (a == track.artists.size() - 1 ? "" : ", ");
 
                                     String image = null;
-                                    if (track.album.images != null)
+                                    if (track.album.images != null && track.album.images.size() > 0)
                                         image = track.album.images.get(0).url;
 
                                     party.queue.add(new Song(id, name, image, artist, duration));

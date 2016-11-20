@@ -21,12 +21,12 @@ public class Party implements Parcelable {
     public String hostSpotifyId = null;
     public String hostToken = null;
 
-    public int attendees;
     public boolean hasPassword;
     public boolean isPlaying;
     public int progress;
     public long timestamp;
 
+    public ArrayList<String> attendees = new ArrayList<>();
     public ArrayList<Song> queue = new ArrayList<>();
     public ArrayList<Song> requests = new ArrayList<>();
 
@@ -42,7 +42,6 @@ public class Party implements Parcelable {
         }
         this.name = name;
         this.nameLower = name.toLowerCase();
-        this.attendees = 1;
         this.isPlaying = true;
         this.progress = 0;
     }
@@ -61,13 +60,13 @@ public class Party implements Parcelable {
         dest.writeString(this.hostName);
         dest.writeString(this.hostSpotifyId);
         dest.writeString(this.hostToken);
-        dest.writeInt(this.attendees);
-        dest.writeInt(this.progress);
         dest.writeByte(this.hasPassword ? (byte) 1 : (byte) 0);
         dest.writeByte(this.isPlaying ? (byte) 1 : (byte) 0);
-        dest.writeList(this.queue);
-        dest.writeList(this.requests);
+        dest.writeInt(this.progress);
         dest.writeLong(this.timestamp);
+        dest.writeStringList(this.attendees);
+        dest.writeTypedList(this.queue);
+        dest.writeTypedList(this.requests);
     }
 
     protected Party(Parcel in) {
@@ -78,18 +77,16 @@ public class Party implements Parcelable {
         this.hostName = in.readString();
         this.hostSpotifyId = in.readString();
         this.hostToken = in.readString();
-        this.attendees = in.readInt();
-        this.progress = in.readInt();
         this.hasPassword = in.readByte() != 0;
         this.isPlaying = in.readByte() != 0;
-        this.queue = new ArrayList<Song>();
-        in.readList(this.queue, Song.class.getClassLoader());
-        this.requests = new ArrayList<Song>();
-        in.readList(this.requests, Song.class.getClassLoader());
+        this.progress = in.readInt();
         this.timestamp = in.readLong();
+        this.attendees = in.createStringArrayList();
+        this.queue = in.createTypedArrayList(Song.CREATOR);
+        this.requests = in.createTypedArrayList(Song.CREATOR);
     }
 
-    public static final Parcelable.Creator<Party> CREATOR = new Parcelable.Creator<Party>() {
+    public static final Creator<Party> CREATOR = new Creator<Party>() {
         @Override
         public Party createFromParcel(Parcel source) {
             return new Party(source);

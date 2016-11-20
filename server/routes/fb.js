@@ -45,7 +45,7 @@ exports.init = () => {
             party.progress += interval;
 
             // Check if move to next song
-            if (party.progress >= party.queue[0].duration) {
+            if (typeof(party.queue) !== 'undefined' && party.queue.length > 0 && party.progress >= party.queue[0].duration) {
                 party.progress = 0;
                 party.queue.push(party.queue.shift());
             }
@@ -73,4 +73,37 @@ exports.sendMessage = (data) => {
 	fcm.send(message, function(err, response) {
 		return !err
 	});
+};
+
+exports.joinParty = (data, socketId) => {
+    var partyId = data;
+    var p;
+    for (var i = 0; i < parties.length; i++) {
+        if (parties[i].id === partyId) {
+            if (parties[i].attendees.indexOf(socketId) === -1) {
+                parties[i].attendees.push(socketId);
+                p = parties[i];
+            }
+            break;
+        }
+    }
+    firebase.database().ref('parties').child(partyId).set(p);
+};
+
+exports.leaveParty = (data, socketId) => {
+    var partyId = data;
+    var p;
+    for (var i = 0; i < parties.length; i++) {
+        if (parties[i].id === partyId) {
+            for (var j = 0; j < parties[i].attendees.length; j++) {
+                if (parties[i].attendees[j] === socketId) {
+                    parties[i].attendees = parties[i].attendees.splice(j, 1);
+                    p = parties[i];
+                    break;
+                }
+            }
+            break;
+        }
+    }
+    firebase.database().ref('parties').child(partyId).set(p);
 };

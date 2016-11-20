@@ -9,6 +9,8 @@ import java.security.NoSuchAlgorithmException;
  * Created by Andrew on 11/5/2016.
  */
 public class Utils {
+
+    public static final String SOCKET_URL = "http://172.30.22.61:3000";
     private static FirebaseDatabase mDatabase;
 
     public static FirebaseDatabase getDatabase() {
