@@ -13,7 +13,7 @@ import Material
     @objc optional func appBarSearchDidChange(searchText: String)
 }
 
-open class AppBarView: UIView {
+open class AppBarView: UIView, UITextFieldDelegate {
     open var delegate: AppBarViewDelegate?
     @IBOutlet weak var lblTitle: UILabel!
     @IBOutlet weak var lblDetail: UILabel!
@@ -78,5 +78,11 @@ open class AppBarView: UIView {
         didSet {
             lblDetail.text = detailText
         }
+    }
+    
+    // MARK: UITextFieldDelagte
+    public func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return false
     }
 }

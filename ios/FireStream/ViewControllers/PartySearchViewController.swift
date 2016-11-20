@@ -30,6 +30,14 @@ class PartySearchViewController: MaterialViewController, UITableViewDelegate, UI
     }
     
     var parties: [Party] = [Party]()
+    var filteredParties: [Party] = [Party]()
+    
+    lazy var passwordPopUp: PasswordPopUp = {
+        return Bundle.main.loadNibNamed(
+            "PasswordPopUp",
+            owner: nil,
+            options: nil)![0] as! PasswordPopUp
+    }()
     
     override var showBtnSearch: Bool {
         get { return true }
@@ -66,7 +74,7 @@ class PartySearchViewController: MaterialViewController, UITableViewDelegate, UI
             guard let partyDict = snapshot.value as? [String:Any] else { return }
             let party = Party(dict: partyDict)
             self.parties.append(party)
-            self.tableView.reloadData()
+            self.displayParties()
         }, withCancel: { (error) in
             print("Database error: \(error)")
         })
@@ -74,9 +82,9 @@ class PartySearchViewController: MaterialViewController, UITableViewDelegate, UI
             guard let partyDict = snapshot.value as? [String:Any] else { return }
             let party = Party(dict: partyDict)
             for i in 0..<self.parties.count {
-                if self.parties[i].id == party.id {
+                if self.parties[i].id == party.id && !party.compareWith(otherParty: self.parties[i]) {
                     self.parties[i] = party
-                    self.tableView.reloadRows(at: [IndexPath(row: i, section: 0)], with: .automatic)
+                    self.displayParties()
                     break
                 }
             }
@@ -90,7 +98,7 @@ class PartySearchViewController: MaterialViewController, UITableViewDelegate, UI
             for i in 0..<self.parties.count {
                 if self.parties[i].id == party.id {
                     self.parties.remove(at: i)
-                    self.tableView.deleteRows(at: [IndexPath(row: i, section: 0)], with: .automatic)
+                    self.displayParties()
                     break
                 }
             }
@@ -111,15 +119,17 @@ class PartySearchViewController: MaterialViewController, UITableViewDelegate, UI
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return parties.count
+        return filteredParties.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "partyCell") as! PartyTableViewCell
-        guard let party = parties[safe: indexPath.row] else { return cell }
+        guard let party = filteredParties[safe: indexPath.row] else { return cell }
         cell.lblName.text = party.name
         cell.lblHost.text = "Hosted by: \(party.hostName)"
         cell.lblAttendees.text = "\(party.attendees < 1000 ? "\(party.attendees)" : ">999")"
+        cell.backgroundColor = party.isHost ? .colorPrimaryDark : .colorBg
+        cell.showLock = party.hasPassword
         if let song = party.queue.first {
             cell.imgAlbumArt.sd_setImage(with: URL(string: song.albumUrl))
         }
@@ -128,11 +138,35 @@ class PartySearchViewController: MaterialViewController, UITableViewDelegate, UI
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        ControllerInterface.DoSegue(segueCommand: .ToParty, viewController: self, segueType: .Show, extraDataObject: parties[indexPath.row])
+        guard let party = self.filteredParties[safe: indexPath.row] else { return }
+        if party.hasPassword {
+            passwordPopUp.frame = self.view.frame
+            passwordPopUp.successCallback = {
+                 ControllerInterface.DoSegue(segueCommand: .ToParty, viewController: self, segueType: .Show, extraDataObject: party)
+            }
+            passwordPopUp.party = party
+            view.addSubview(passwordPopUp)
+        } else {
+            ControllerInterface.DoSegue(segueCommand: .ToParty, viewController: self, segueType: .Show, extraDataObject: party)
+        }
     }
-    
+    var filterString = ""
     // MARK: AppBarViewDelegate
     func appBarSearchDidChange(searchText: String) {
-        
+        filterString = searchText
+        displayParties()
+    }
+    
+    func displayParties() {
+        if !filterString.isEmpty {
+            filteredParties = parties.filter {
+                $0.name.lowercased().contains(filterString.lowercased())
+            }
+        } else {
+            filteredParties = parties
+        }
+        DispatchQueue.main.async {
+            self.tableView.reloadData()
+        }
     }
 }

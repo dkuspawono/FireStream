@@ -79,6 +79,15 @@ import UIKit
         }
     }
     
+    @IBInspectable var placeHolderColor:UIColor? {
+        didSet {
+            if let color = placeHolderColor {
+                attributedPlaceholder = NSAttributedString(string: placeholder ?? "",
+                                                           attributes: [NSForegroundColorAttributeName : color])
+            }
+        }
+    }
+    
     // MARK:- Init
     required init?(coder aDecoder:NSCoder) {
         super.init(coder:aDecoder)
@@ -99,8 +108,7 @@ import UIKit
             title.textColor = titleActiveTextColour
         } else {
             title.textColor = titleTextColour
-        }
-        // Should we show or hide the title label?
+        }        // Should we show or hide the title label?
         if let txt = text, txt.isEmpty {
             // Hide
             hideTitle(animated: isResp)

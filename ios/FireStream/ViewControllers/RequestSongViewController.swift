@@ -50,6 +50,7 @@ class RequestSongViewController: MaterialViewController, UITableViewDelegate, UI
         cell.lblInfo.text = "\(song.artist)"
         cell.imgAlbumArt.sd_setImage(with: URL(string: song.albumUrl))
         cell.showBtnAdd = true
+        cell.btnAdd.isEnabled = true
         cell.btnAdd.tag = indexPath.row
         cell.btnAdd.addTarget(self, action: #selector(btnAddPressed(_:)), for: .touchUpInside)
         return cell
@@ -59,6 +60,7 @@ class RequestSongViewController: MaterialViewController, UITableViewDelegate, UI
     }
     
     func btnAddPressed(_ sender: UIButton) {
+        sender.isEnabled = false
         guard let song = songs[safe: sender.tag] else { return }
         guard let oldParty = extraDataObject as? Party else { return }
         let partyRef = Utils.getDatabase().reference(fromURL: "https://firestream-4e998.firebaseio.com/parties").child(oldParty.id)
@@ -66,7 +68,7 @@ class RequestSongViewController: MaterialViewController, UITableViewDelegate, UI
             guard let partyDict = snapshot.value as? [String:Any] else { return }
             let newParty = Party(dict: partyDict)
             newParty.requests.append(song)
-            partyRef.setValue(newParty.dictionaryValue)
+            partyRef.setValue(newParty.dictionaryValueWithTimestamp)
         })
     }
     

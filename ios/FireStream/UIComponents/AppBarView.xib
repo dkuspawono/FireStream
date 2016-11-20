@@ -19,7 +19,7 @@
                     <rect key="frame" x="48" y="13" width="327" height="30"/>
                     <subviews>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="VIz-Tm-SfA">
-                            <rect key="frame" x="0.0" y="4" width="41.5" height="22"/>
+                            <rect key="frame" x="0.0" y="4" width="42" height="22"/>
                             <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="16"/>
                             <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             <nil key="highlightedColor"/>
@@ -37,7 +37,7 @@
                             </constraints>
                             <nil key="textColor"/>
                             <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                            <textInputTraits key="textInputTraits"/>
+                            <textInputTraits key="textInputTraits" returnKeyType="done"/>
                             <userDefinedRuntimeAttributes>
                                 <userDefinedRuntimeAttribute type="color" keyPath="titleTextColour">
                                     <color key="value" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
@@ -48,6 +48,7 @@
                             </userDefinedRuntimeAttributes>
                             <connections>
                                 <action selector="textFieldDidChange:" destination="iN0-l3-epB" eventType="editingChanged" id="LIx-VR-qQe"/>
+                                <outlet property="delegate" destination="iN0-l3-epB" id="FGV-Nd-UG7"/>
                             </connections>
                         </textField>
                     </subviews>

@@ -10,4 +10,5 @@ target 'FireStream' do
   pod 'Material', :git => 'https://github.com/CosmicMind/Material.git', :branch => 'development';
   pod 'SDWebImage'
   pod 'Spotify-iOS-SDK'
+  pod 'MKDropdownMenu'
 end

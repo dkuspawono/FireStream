@@ -32,6 +32,9 @@ class PartyViewController: MaterialViewController, UITableViewDelegate, UITableV
     
     var party: Party! {
         didSet {
+            if (party.id == "") {
+                (navigationController as? MaterialNavigationController)?.backAction()
+            }
             title = party.name
             if self == navigationController?.viewControllers.last {
                 (navigationController as? MaterialNavigationController)?.defaultAppBarView.title = party.name
@@ -48,6 +51,7 @@ class PartyViewController: MaterialViewController, UITableViewDelegate, UITableV
             tableView.reloadData()
             controlView.isHidden = !party.isHost
             constraintControlView.constant = party.isHost ? 128 : 0
+            seekbar.isEnabled = party.isHost
         }
     }
     
@@ -62,7 +66,7 @@ class PartyViewController: MaterialViewController, UITableViewDelegate, UITableV
         if let tempParty = extraDataObject as? Party {
             party = tempParty
         } else {
-            _ = self.navigationController?.popViewController(animated: true)
+            (navigationController as? MaterialNavigationController)?.backAction()
             return
         }
         subscribeToParty()

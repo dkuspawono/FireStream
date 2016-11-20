@@ -61,5 +61,16 @@ class Song {
             }
         }
     }
-
+    static public func ==(lhs: Song, rhs: Song) -> Bool {
+        return
+            lhs.name == rhs.name &&
+                lhs.id == rhs.id &&
+                lhs.album == rhs.album &&
+                lhs.albumUrl == rhs.albumUrl &&
+                lhs.artist == rhs.artist &&
+                lhs.duration == rhs.duration
+    }
 }
+
+extension Song: Equatable {}
+

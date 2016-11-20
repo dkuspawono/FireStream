@@ -18,12 +18,14 @@ class Party {
     var hostName: String = ""
     var attendees: Int = 0
     var progress: Int64 = 0
+    var isPlaying: Bool = false
+    var password: String = ""
     
     var isHost: Bool {
         return SpotifyInterface.GetUserId() == hostToken
     }
     
-    var dictionaryValue:[String:Any] {
+    var dictionaryValueWithTimestamp:[String:Any] {
         let timestamp = Int64((Date().timeIntervalSince1970 * 1000))
         return [
             "id": id,
@@ -36,6 +38,20 @@ class Party {
             "attendees": attendees,
             "progress": progress,
             "timestamp": timestamp
+        ]
+    }
+    
+    var dictionaryValue:[String:Any] {
+        return [
+            "id": id,
+            "name": name,
+            "queue": queue.map {$0.dictionaryValue},
+            "requests": requests.map {$0.dictionaryValue},
+            "hasPassword": hasPassword,
+            "hostToken": hostToken,
+            "hostName": hostName,
+            "attendees": attendees,
+            "progress": progress
         ]
     }
     
@@ -67,5 +83,14 @@ class Party {
         if let val = dict["progress"] as? Int64 {
             progress = val
         }
+        if let val = dict["password"] as? String {
+            password = val
+        }
+    }
+    
+    func compareWith(otherParty: Party, ignoreProgress: Bool = true) -> Bool {
+        return self.id == otherParty.id && self.name == otherParty.name && self.queue == otherParty.queue &&
+        self.requests == otherParty.requests && self.hasPassword == otherParty.hasPassword && self.hostToken == otherParty.hostToken &&
+        self.hostName == otherParty.hostName && self.attendees == otherParty.attendees && ((!ignoreProgress && self.progress == otherParty.progress) || ignoreProgress)
     }
 }
