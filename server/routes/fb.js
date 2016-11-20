@@ -4,6 +4,7 @@ const FCM = require('fcm-push');
 let serverKey = 'AIzaSyBzTq646tEIVVvwr-QLxjURAcAoFfX7F60';
 let fcm = new FCM(serverKey);
 
+var parties = [];
 exports.init = () => {
 	firebase.initializeApp({
 		apiKey: serverKey,
@@ -13,7 +14,6 @@ exports.init = () => {
 
 	// Subscribing to parties
 	var ref = firebase.database().ref('parties');
-	var parties = [];
 	ref.on('child_added', function(data) {
 		parties.push(data.val());
 	});
