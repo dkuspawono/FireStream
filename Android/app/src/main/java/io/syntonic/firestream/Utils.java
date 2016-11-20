@@ -10,7 +10,7 @@ import java.security.NoSuchAlgorithmException;
  */
 public class Utils {
 
-    public static final String SOCKET_URL = "http://172.30.22.61:3000";
+    public static final String SOCKET_URL = "https://fire-stream.herokuapp.com/";
     private static FirebaseDatabase mDatabase;
 
     public static FirebaseDatabase getDatabase() {
