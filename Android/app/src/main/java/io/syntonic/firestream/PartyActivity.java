@@ -116,6 +116,9 @@ public class PartyActivity extends AppCompatActivity implements ConnectionStateC
         ImageButton controlsNext = (ImageButton) findViewById(R.id.player_button_next);
         SeekBar songProgress = (SeekBar) findViewById(R.id.sb_player_progress);
 
+        TextView partyCount = (TextView) findViewById(R.id.tv_party_count);
+        partyCount.setText(String.valueOf(party.attendees));
+
         if (song.albumUrl != null)
             Picasso.with(this).load(song.albumUrl).into(albumImage);
         if (song.name != null)
@@ -151,6 +154,8 @@ public class PartyActivity extends AppCompatActivity implements ConnectionStateC
                         mPlayer.resume(null);
                     else if (!party.isPlaying)
                         mPlayer.pause(null);
+                    if (mPlayer != null && party.isPlaying)
+                        mPlayer.playUri(null, "spotify:track:" + party.queue.get(0).id, 0, party.progress);
                     updateParty();
                 }
             });

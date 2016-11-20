@@ -114,7 +114,7 @@ public class MainActivity extends AppCompatActivity {
 
         final DatabaseReference db = Utils.getDatabase().getReference(FIREBASE_DATABASE_TABLE_PARTIES);
 
-        Query q = db.orderByChild("name").limitToLast(50);
+        Query q = db.orderByChild("attendees").limitToLast(50);
         q.addChildEventListener((new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
@@ -181,13 +181,19 @@ public class MainActivity extends AppCompatActivity {
                 Collections.sort(myParties, new Comparator<Party>() {
                     @Override
                     public int compare(Party l, Party r) {
-                        return r.attendees.size() - l.attendees.size();
+                        int n;
+                        n = r.attendees - l.attendees;
+                        if (n != 0) return n;
+                        return r.id.compareTo(l.id);
                     }
                 });
                 Collections.sort(otherParties, new Comparator<Party>() {
                     @Override
                     public int compare(Party l, Party r) {
-                        return r.attendees.size() - l.attendees.size();
+                        int n;
+                        n = r.attendees - l.attendees;
+                        if (n != 0) return n;
+                        return r.id.compareTo(l.id);
                     }
                 });
                 parties = new ArrayList<>();
@@ -197,7 +203,10 @@ public class MainActivity extends AppCompatActivity {
                 Collections.sort(parties, new Comparator<Party>() {
                     @Override
                     public int compare(Party l, Party r) {
-                        return r.attendees.size() - l.attendees.size();
+                        int n;
+                        n = r.attendees - l.attendees;
+                        if (n != 0) return n;
+                        return r.id.compareTo(l.id);
                     }
                 });
             }
@@ -398,7 +407,7 @@ public class MainActivity extends AppCompatActivity {
 
             holder.partyDetails.setText(details);
 
-            holder.partyCount.setText(String.valueOf(party.attendees.size()));
+            holder.partyCount.setText(String.valueOf(party.attendees));
 
             if (song != null) {
                 Picasso.with(context).load(song.albumUrl).into(holder.partyCurrentImage);

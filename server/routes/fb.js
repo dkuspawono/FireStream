@@ -34,7 +34,7 @@ exports.init = () => {
 	});
 
 	// Increment song progress
-    var interval = 2500;
+    var interval = 5000;
 	setInterval(function() {
         for (var i = 0; i < parties.length; i++) {
             var party = parties[i];
@@ -77,33 +77,30 @@ exports.sendMessage = (data) => {
 
 exports.joinParty = (data, socketId) => {
     var partyId = data;
-    var p;
     for (var i = 0; i < parties.length; i++) {
         if (parties[i].id === partyId) {
-            if (parties[i].attendees.indexOf(socketId) === -1) {
-                parties[i].attendees.push(socketId);
-                p = parties[i];
+            if (!parties[i].members)
+                parties[i].members = [];
+            if (parties[i].members.indexOf(socketId) === -1) {
+                parties[i].members.push(socketId);
+                parties[i].attendees = parties[i].members.length;
+                parties[i].timestamp = new Date().getTime();
+                firebase.database().ref('parties').child(partyId).set(parties[i]);
             }
             break;
         }
     }
-    firebase.database().ref('parties').child(partyId).set(p);
 };
 
-exports.leaveParty = (data, socketId) => {
-    var partyId = data;
-    var p;
+exports.leaveParties = (socketId) => {
     for (var i = 0; i < parties.length; i++) {
-        if (parties[i].id === partyId) {
-            for (var j = 0; j < parties[i].attendees.length; j++) {
-                if (parties[i].attendees[j] === socketId) {
-                    parties[i].attendees = parties[i].attendees.splice(j, 1);
-                    p = parties[i];
-                    break;
-                }
+        for (var j = 0; j < parties[i].members.length; j++) {
+            if (parties[i].members[j] === socketId) {
+                parties[i].members = parties[i].members.splice(j, 1);
+                parties[i].attendees = parties[i].members.length;
+                parties[i].timestamp = new Date().getTime();
+                firebase.database().ref('parties').child(parties[i].id).set(parties[i]);
             }
-            break;
         }
     }
-    firebase.database().ref('parties').child(partyId).set(p);
 };

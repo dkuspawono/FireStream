@@ -25,8 +25,9 @@ public class Party implements Parcelable {
     public boolean isPlaying;
     public int progress;
     public long timestamp;
+    public int attendees;
 
-    public ArrayList<String> attendees = new ArrayList<>();
+    public ArrayList<String> members = new ArrayList<>();
     public ArrayList<Song> queue = new ArrayList<>();
     public ArrayList<Song> requests = new ArrayList<>();
 
@@ -64,9 +65,10 @@ public class Party implements Parcelable {
         dest.writeByte(this.isPlaying ? (byte) 1 : (byte) 0);
         dest.writeInt(this.progress);
         dest.writeLong(this.timestamp);
-        dest.writeStringList(this.attendees);
+        dest.writeStringList(this.members);
         dest.writeTypedList(this.queue);
         dest.writeTypedList(this.requests);
+        dest.writeInt(this.attendees);
     }
 
     protected Party(Parcel in) {
@@ -81,9 +83,10 @@ public class Party implements Parcelable {
         this.isPlaying = in.readByte() != 0;
         this.progress = in.readInt();
         this.timestamp = in.readLong();
-        this.attendees = in.createStringArrayList();
+        this.members = in.createStringArrayList();
         this.queue = in.createTypedArrayList(Song.CREATOR);
         this.requests = in.createTypedArrayList(Song.CREATOR);
+        this.attendees = in.readInt();
     }
 
     public static final Creator<Party> CREATOR = new Creator<Party>() {

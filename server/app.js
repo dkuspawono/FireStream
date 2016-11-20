@@ -18,15 +18,12 @@ io.on('connection', function(socket) {
 		socket.emit('sendNotification', success);
 	});
 	socket.on('joinParty', (data) => {
-		clients.push({
-			socket: socket,
-			partyId: data
-		});
+        console.log('joinParty ' + socket.id);
 		fb.joinParty(data, socket.id);
 	});
-	socket.on('disconnect', (data) => {
-		console.log('disconnect');
-		fb.leaveParty(data, socket.id);
+	socket.on('disconnect', () => {
+        console.log('leaveParties ' + socket.id);
+        fb.leaveParties(socket.id);
 	});
 });
 
