@@ -134,7 +134,8 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
                 parties.add(p);
-                displayParties();
+                if (mSearchQuery == null || mSearchQuery.isEmpty())
+                    displayParties();
             }
 
             @Override
@@ -265,7 +266,7 @@ public class MainActivity extends AppCompatActivity {
                         parties = new ArrayList<>();
 
                         final DatabaseReference db = Utils.getDatabase().getReference(FIREBASE_DATABASE_TABLE_PARTIES);
-                        Query q = db.orderByChild("nameLower").startAt(mSearchQuery).endAt(mSearchQuery + '\uf8ff').limitToFirst(50);
+                        Query q = db.orderByChild("nameLower").startAt(mSearchQuery).endAt(mSearchQuery + '~').limitToFirst(50);
                         q.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
