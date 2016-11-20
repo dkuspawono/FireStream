@@ -123,23 +123,7 @@ public class PartyActivity extends AppCompatActivity implements ConnectionStateC
         recyclerView.setLayoutManager(linearLayoutManager);
 
         // If we are host, initialize player
-        if (party != null && ((MyApplication) getApplicationContext()).spotifyUserId != null && ((MyApplication) getApplicationContext()).spotifyUserId.equals(party.hostSpotifyId) &&
-                ((MyApplication) getApplicationContext()).spotifyAccessToken != null) {
-            Config playerConfig = new Config(this, ((MyApplication) getApplicationContext()).spotifyAccessToken, getString(R.string.spotify_client_id));
-            Spotify.getPlayer(playerConfig, this, new SpotifyPlayer.InitializationObserver() {
-                @Override
-                public void onInitialized(SpotifyPlayer spotifyPlayer) {
-                    mPlayer = spotifyPlayer;
-                    mPlayer.addConnectionStateCallback(PartyActivity.this);
-                    mPlayer.addNotificationCallback(PartyActivity.this);
-                }
-
-                @Override
-                public void onError(Throwable throwable) {
-                    Log.e("MainActivity", "Could not initialize player: " + throwable.getMessage());
-                }
-            });
-        }
+        initPlayer();
 
         // Connect to node socket
         try {
@@ -159,6 +143,26 @@ public class PartyActivity extends AppCompatActivity implements ConnectionStateC
                 startActivity(intent);
             }
         });
+    }
+
+    private void initPlayer() {
+        if (party != null && ((MyApplication) getApplicationContext()).spotifyUserId != null && ((MyApplication) getApplicationContext()).spotifyUserId.equals(party.hostSpotifyId) &&
+                ((MyApplication) getApplicationContext()).spotifyAccessToken != null) {
+            Config playerConfig = new Config(this, ((MyApplication) getApplicationContext()).spotifyAccessToken, getString(R.string.spotify_client_id));
+            Spotify.getPlayer(playerConfig, this, new SpotifyPlayer.InitializationObserver() {
+                @Override
+                public void onInitialized(SpotifyPlayer spotifyPlayer) {
+                    mPlayer = spotifyPlayer;
+                    mPlayer.addConnectionStateCallback(PartyActivity.this);
+                    mPlayer.addNotificationCallback(PartyActivity.this);
+                }
+
+                @Override
+                public void onError(Throwable throwable) {
+                    Log.e("MainActivity", "Could not initialize player: " + throwable.getMessage());
+                }
+            });
+        }
     }
 
     @Override
@@ -242,8 +246,8 @@ public class PartyActivity extends AppCompatActivity implements ConnectionStateC
                     party = p;
                     updateSongs();
                     subscribeToParty();
+                    initPlayer();
                 }
-
 
                 Utils.getDatabase().getReference(MainActivity.FIREBASE_DATABASE_TABLE_PARTIES).child(partyId).setValue(
                         p, new DatabaseReference.CompletionListener() {
@@ -251,6 +255,7 @@ public class PartyActivity extends AppCompatActivity implements ConnectionStateC
                             public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
                                 if (databaseError == null)
                                     Toast.makeText(PartyActivity.this, "Song added", Toast.LENGTH_SHORT).show();
+
                             }
                         });
             }
@@ -311,12 +316,10 @@ public class PartyActivity extends AppCompatActivity implements ConnectionStateC
                 public void onClick(View view) {
                     party.isPlaying = !party.isPlaying;
                     controlsPlayPause.setImageDrawable(party.isPlaying ? getResources().getDrawable(R.drawable.ic_pause_white_24dp) : getResources().getDrawable(R.drawable.ic_play_arrow_white_24dp));
-                    if (party.isPlaying)
-                        mPlayer.resume(null);
-                    else if (!party.isPlaying)
-                        mPlayer.pause(null);
                     if (mPlayer != null && party.isPlaying)
                         mPlayer.playUri(null, "spotify:track:" + party.queue.get(0).id, 0, party.progress);
+                    else if (mPlayer != null && !party.isPlaying)
+                        mPlayer.pause(null);
                     updateParty();
                 }
             });
@@ -566,6 +569,7 @@ public class PartyActivity extends AppCompatActivity implements ConnectionStateC
                 Song toPlay = party.queue.remove(position);
                 party.queue.add(0, toPlay);
                 party.progress = 0;
+                party.isPlaying = true;
                 updateParty();
                 updateSongs();
                 if (mPlayer != null && party.queue.size() > 0)
