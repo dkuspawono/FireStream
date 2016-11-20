@@ -7,8 +7,12 @@
 //
 
 import UIKit
+import Material
 
-class SongTableViewCell: UITableViewCell {
+class SongTableViewCell: TableViewCell {
+    @IBOutlet weak var lblName: UILabel!
+    @IBOutlet weak var lblInfo: UILabel!
+    @IBOutlet weak var imgAlbumArt: UIImageView!
 
     override func awakeFromNib() {
         super.awakeFromNib()

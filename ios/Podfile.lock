@@ -34,12 +34,18 @@ PODS:
   - Material (2.3.12):
     - Material/Core (= 2.3.12)
   - Material/Core (2.3.12)
+  - SDWebImage (3.8.2):
+    - SDWebImage/Core (= 3.8.2)
+  - SDWebImage/Core (3.8.2)
+  - Spotify-iOS-SDK (0.21.0)
 
 DEPENDENCIES:
   - Firebase/Core
   - Firebase/Database
   - Firebase/Messaging
   - Material (from `https://github.com/CosmicMind/Material.git`, branch `development`)
+  - SDWebImage
+  - Spotify-iOS-SDK
 
 EXTERNAL SOURCES:
   Material:
@@ -62,7 +68,9 @@ SPEC CHECKSUMS:
   GoogleSymbolUtilities: 33117db1b5f290c6fbf259585e4885b4c84b98d7
   GoogleUtilities: 56c5ac05b7aa5dc417a1bb85221a9516e04d7032
   Material: 5b1a922ad4d9c6854f9b68c0477fc9b2b41dcc56
+  SDWebImage: 098e97e6176540799c27e804c96653ee0833d13c
+  Spotify-iOS-SDK: 4f4f970c6e301d84ce28ab67759358c33c972b4a
 
-PODFILE CHECKSUM: c443da8842bbb124595e6a058afe2bba44428770
+PODFILE CHECKSUM: 61c78986e0754ee7e8f601ac8640406ecc9c2d35
 
 COCOAPODS: 1.0.1

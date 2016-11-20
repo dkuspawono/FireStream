@@ -11,13 +11,12 @@ import Foundation
 class Party {
     var id: String = ""
     var name: String = ""
-    //var queue: [Song] = [Song]()
-    //var requests: [Song] = [Song]()
+    var queue: [Song] = [Song]()
+    var requests: [Song] = [Song]()
     var hasPassword: Bool = false
     var hostId: String = ""
     var hostName: String = ""
-    
-    
+    var attendees: Int = 0
     
     init(dict: [String: Any]) {
         if let val = dict["id"] as? String {
@@ -27,10 +26,10 @@ class Party {
             self.name = val
         }
         if let val = dict["queue"] as? [[String:Any]] {
-            
+            self.queue = val.map { Song(dict: $0) }
         }
         if let val = dict["requests"] as? [[String:Any]] {
-            
+            self.requests = val.map { Song(dict: $0) }
         }
         if let val = dict["hasPassword"] as? Bool {
             self.hasPassword = val
@@ -40,6 +39,9 @@ class Party {
         }
         if let val = dict["hostName"] as? String {
             self.hostName = val
+        }
+        if let val = dict["attendees"] as? Int {
+            attendees = val
         }
     }
 }

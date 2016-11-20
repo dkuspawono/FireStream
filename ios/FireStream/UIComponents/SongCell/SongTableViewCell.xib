@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="11535.1" systemVersion="15G1108" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11523"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="iN0-l3-epB" customClass="SongTableViewCell" customModule="FireStream" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="375" height="96"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="L5E-Cs-PgT">
+                    <rect key="frame" x="0.0" y="0.0" width="375" height="96"/>
+                    <subviews>
+                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="STO-fl-OZP">
+                            <rect key="frame" x="16" y="16" width="64" height="64"/>
+                            <constraints>
+                                <constraint firstAttribute="width" constant="64" id="eam-nO-Syb"/>
+                                <constraint firstAttribute="height" constant="64" id="u3y-15-fHY"/>
+                            </constraints>
+                        </imageView>
+                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="DuA-HK-fnj">
+                            <rect key="frame" x="94" y="13" width="83.5" height="40"/>
+                            <subviews>
+                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Song" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Oau-5z-i1k">
+                                    <rect key="frame" x="0.0" y="0.0" width="83.5" height="17"/>
+                                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                    <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                    <nil key="highlightedColor"/>
+                                </label>
+                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Artist|Duration" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="mTD-jU-A4N">
+                                    <rect key="frame" x="0.0" y="25" width="83.5" height="15"/>
+                                    <fontDescription key="fontDescription" name=".AppleSystemUIFont" family=".AppleSystemUIFont" pointSize="12"/>
+                                    <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                    <nil key="highlightedColor"/>
+                                </label>
+                            </subviews>
+                            <constraints>
+                                <constraint firstItem="mTD-jU-A4N" firstAttribute="leading" secondItem="DuA-HK-fnj" secondAttribute="leading" id="C1h-0z-hx3"/>
+                                <constraint firstItem="Oau-5z-i1k" firstAttribute="top" secondItem="DuA-HK-fnj" secondAttribute="top" id="ER4-Y3-K33"/>
+                                <constraint firstItem="Oau-5z-i1k" firstAttribute="leading" secondItem="DuA-HK-fnj" secondAttribute="leading" id="GMs-9R-hlk"/>
+                                <constraint firstAttribute="bottom" secondItem="mTD-jU-A4N" secondAttribute="bottom" id="Tg7-0x-P9y"/>
+                                <constraint firstItem="mTD-jU-A4N" firstAttribute="top" secondItem="Oau-5z-i1k" secondAttribute="bottom" constant="8" id="dML-wC-s6Y"/>
+                                <constraint firstAttribute="trailing" secondItem="mTD-jU-A4N" secondAttribute="trailing" id="gqD-rs-VfY"/>
+                                <constraint firstAttribute="trailing" secondItem="Oau-5z-i1k" secondAttribute="trailing" id="msP-zY-IN7"/>
+                            </constraints>
+                        </view>
+                    </subviews>
+                    <constraints>
+                        <constraint firstItem="STO-fl-OZP" firstAttribute="centerY" secondItem="L5E-Cs-PgT" secondAttribute="centerY" id="65m-gy-aFp"/>
+                        <constraint firstItem="STO-fl-OZP" firstAttribute="leading" secondItem="L5E-Cs-PgT" secondAttribute="leading" constant="16" id="CGp-35-fiV"/>
+                        <constraint firstItem="STO-fl-OZP" firstAttribute="top" secondItem="L5E-Cs-PgT" secondAttribute="top" constant="16" id="Grt-mC-oHC"/>
+                        <constraint firstItem="DuA-HK-fnj" firstAttribute="leading" secondItem="STO-fl-OZP" secondAttribute="trailing" constant="14" id="Ht0-HW-Rg2"/>
+                        <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="DuA-HK-fnj" secondAttribute="trailing" constant="16" id="KCV-DE-wF5"/>
+                        <constraint firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="DuA-HK-fnj" secondAttribute="bottom" constant="16" id="SXt-xY-M9f"/>
+                        <constraint firstAttribute="bottom" secondItem="STO-fl-OZP" secondAttribute="bottom" constant="16" id="WIs-qR-ZLx"/>
+                        <constraint firstItem="DuA-HK-fnj" firstAttribute="top" secondItem="L5E-Cs-PgT" secondAttribute="top" constant="13" id="emt-YW-OEu"/>
+                    </constraints>
+                </view>
+            </subviews>
+            <color key="backgroundColor" red="0.18823529780000001" green="0.18823529780000001" blue="0.18823529780000001" alpha="1" colorSpace="calibratedRGB"/>
+            <constraints>
+                <constraint firstItem="L5E-Cs-PgT" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="818-KN-vT3"/>
+                <constraint firstAttribute="bottom" secondItem="L5E-Cs-PgT" secondAttribute="bottom" id="D3M-dR-eGQ"/>
+                <constraint firstAttribute="trailing" secondItem="L5E-Cs-PgT" secondAttribute="trailing" id="HAc-AT-TL6"/>
+                <constraint firstItem="L5E-Cs-PgT" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="wnZ-cf-aJd"/>
+            </constraints>
+            <nil key="simulatedStatusBarMetrics"/>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <userDefinedRuntimeAttributes>
+                <userDefinedRuntimeAttribute type="color" keyPath="pulseColor">
+                    <color key="value" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                </userDefinedRuntimeAttribute>
+                <userDefinedRuntimeAttribute type="color" keyPath="backgroundColor">
+                    <color key="value" red="0.18823529780000001" green="0.18823529780000001" blue="0.18823529780000001" alpha="1" colorSpace="calibratedRGB"/>
+                </userDefinedRuntimeAttribute>
+            </userDefinedRuntimeAttributes>
+            <connections>
+                <outlet property="imgAlbumArt" destination="STO-fl-OZP" id="Zei-Et-qJL"/>
+                <outlet property="lblInfo" destination="mTD-jU-A4N" id="Fep-GB-Od5"/>
+                <outlet property="lblName" destination="Oau-5z-i1k" id="imG-YC-5Gs"/>
+            </connections>
+        </view>
+    </objects>
+</document>

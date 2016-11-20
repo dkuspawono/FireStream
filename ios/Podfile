@@ -8,4 +8,6 @@ target 'FireStream' do
   pod 'Firebase/Messaging'
   pod 'Firebase/Database'
   pod 'Material', :git => 'https://github.com/CosmicMind/Material.git', :branch => 'development';
+  pod 'SDWebImage'
+  pod 'Spotify-iOS-SDK'
 end

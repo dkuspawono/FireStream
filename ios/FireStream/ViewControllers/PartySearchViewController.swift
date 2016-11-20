@@ -8,7 +8,8 @@
 
 import UIKit
 import Firebase
-import Material
+import SDWebImage
+import Spotify
 
 class PartySearchViewController: MaterialViewController, UITableViewDelegate, UITableViewDataSource, UISearchResultsUpdating {
     
@@ -16,6 +17,18 @@ class PartySearchViewController: MaterialViewController, UITableViewDelegate, UI
     
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var superViewSearchBar: UIView!
+    
+    @IBAction func BtnAddPressed() {
+        if SpotifyInterface.IsInitilized() {
+            ControllerInterface.DoSegue(segueCommand: .ToCreateParty, viewController: self, segueType: .Modal)
+        } else {
+            guard let controller = SpotifyInterface.Authenticate() else {
+                ControllerInterface.DoSegue(segueCommand: .ToCreateParty, viewController: self, segueType: .Modal)
+                return
+            }
+            self.present(controller, animated: true, completion: nil)
+        }
+    }
     
     let searchController = UISearchController(searchResultsController: nil)
     var parties: [Party] = [Party]()
@@ -126,14 +139,19 @@ class PartySearchViewController: MaterialViewController, UITableViewDelegate, UI
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "partyCell") as! PartyTableViewCell
-        let party = parties[indexPath.row]
+        guard let party = parties[safe: indexPath.row] else { return cell }
         cell.lblName.text = party.name
-        cell.lblHost.text = party.hostName
+        cell.lblHost.text = "Hosted by: \(party.hostName)"
+        cell.lblAttendees.text = "\(party.attendees < 1000 ? "\(party.attendees)" : ">999")"
+        if let song = party.queue.first {
+            cell.imgAlbumArt.sd_setImage(with: URL(string: song.albumUrl))
+        }
+        
         return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        
+        ControllerInterface.DoSegue(segueCommand: .ToParty, viewController: self, segueType: .Show, extraDataObject: parties[indexPath.row])
     }
     
     // MARK: UISearchResultsUpdating

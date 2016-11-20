@@ -15,6 +15,8 @@ class MaterialViewController: UIViewController {
     
     var detailText: String?
     
+    var extraDataObject: Any?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         

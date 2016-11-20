@@ -26,3 +26,35 @@ extension UIColor {
         return UIColor(colorLiteralRed: 48/255, green: 48/255, blue: 48/255, alpha: 1.0)
     }
 }
+
+extension TimeInterval {
+    var minuteSecondMS: String {
+        return String(format:"%d:%02d.%03d", minute, second, millisecond)
+    }
+    var minuteSecond: String {
+        return String(format:"%d:%02d", minute, second)
+    }
+    var minute: Int {
+        return Int((self/60.0).truncatingRemainder(dividingBy: 60))
+    }
+    var second: Int {
+        return Int(self.truncatingRemainder(dividingBy: 60))
+    }
+    var millisecond: Int {
+        return Int((self*1000).truncatingRemainder(dividingBy: 1000))
+    }
+}
+
+extension Int64 {
+    var msToSeconds: Double {
+        return Double(self) / 1000
+    }
+}
+
+extension Collection where Indices.Iterator.Element == Index {
+    
+    /// Returns the element at the specified index iff it is within bounds, otherwise nil.
+    subscript (safe index: Index) -> Generator.Element? {
+        return indices.contains(index) ? self[index] : nil
+    }
+}

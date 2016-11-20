@@ -7,15 +7,18 @@
 //
 
 import UIKit
+import Material
 
-class PartyTableViewCell: UITableViewCell {
+class PartyTableViewCell: TableViewCell {
     @IBOutlet weak var imgAlbumArt: UIImageView!
     @IBOutlet weak var lblName: UILabel!
     @IBOutlet weak var lblHost: UILabel!
+    @IBOutlet weak var lblAttendees: UILabel!
+    @IBOutlet weak var imgPeople: UIImageView!
 
     override func awakeFromNib() {
         super.awakeFromNib()
-        // Initialization code
+        imgPeople.image = imgPeople.image?.withRenderingMode(.alwaysTemplate)
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {

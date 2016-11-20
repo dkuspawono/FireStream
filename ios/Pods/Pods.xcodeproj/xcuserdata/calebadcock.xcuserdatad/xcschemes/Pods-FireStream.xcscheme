@@ -14,7 +14,7 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "EF0F0D9F426FD00F9FCEFBEDE4CC7FEA"
+               BlueprintIdentifier = "76BC7A064D9B01A371158D77021313A2"
                BuildableName = "Pods_FireStream.framework"
                BlueprintName = "Pods-FireStream"
                ReferencedContainer = "container:Pods.xcodeproj">
@@ -45,7 +45,7 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "EF0F0D9F426FD00F9FCEFBEDE4CC7FEA"
+            BlueprintIdentifier = "76BC7A064D9B01A371158D77021313A2"
             BuildableName = "Pods_FireStream.framework"
             BlueprintName = "Pods-FireStream"
             ReferencedContainer = "container:Pods.xcodeproj">

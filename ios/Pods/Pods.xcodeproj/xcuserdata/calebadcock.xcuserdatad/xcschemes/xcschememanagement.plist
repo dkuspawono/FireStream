@@ -24,6 +24,16 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
+		<key>SDWebImage.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>Spotify-iOS-SDK.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
@@ -37,12 +47,22 @@
 			<key>primary</key>
 			<true/>
 		</dict>
+		<key>76BC7A064D9B01A371158D77021313A2</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>7966738742C44903D70CD4E7B6666272</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
 		<key>BC911AFCCCAA952028F27336441D755A</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>EF0F0D9F426FD00F9FCEFBEDE4CC7FEA</key>
+		<key>FE08F859FAFA51D6DDFB9A5B4F86C05A</key>
 		<dict>
 			<key>primary</key>
 			<true/>

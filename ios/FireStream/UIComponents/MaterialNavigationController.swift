@@ -17,6 +17,7 @@ class MaterialNavigationController: UINavigationController {
             owner: nil,
             options: nil)![0] as! AppBarView
         temp.translatesAutoresizingMaskIntoConstraints = false
+        temp.btnBack.addTarget(self, action: #selector(backAction), for: .touchUpInside)
         return temp
     }()
     
