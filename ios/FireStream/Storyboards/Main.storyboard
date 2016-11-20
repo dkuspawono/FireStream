@@ -138,57 +138,74 @@
                                         <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         <nil key="highlightedColor"/>
                                     </label>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fNm-K2-f2w" customClass="IconButton" customModule="Material">
-                                        <rect key="frame" x="239" y="32" width="32" height="32"/>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="CN2-JO-cFT">
+                                        <rect key="frame" x="239" y="31" width="128" height="32"/>
+                                        <subviews>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fNm-K2-f2w" customClass="IconButton" customModule="Material">
+                                                <rect key="frame" x="0.0" y="0.0" width="32" height="32"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="32" id="5ug-YO-6gq"/>
+                                                </constraints>
+                                                <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                <state key="normal" image="ic_skip_previous"/>
+                                                <userDefinedRuntimeAttributes>
+                                                    <userDefinedRuntimeAttribute type="color" keyPath="pulseColor">
+                                                        <color key="value" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                    </userDefinedRuntimeAttribute>
+                                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                                        <integer key="value" value="16"/>
+                                                    </userDefinedRuntimeAttribute>
+                                                </userDefinedRuntimeAttributes>
+                                            </button>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="yKY-6y-fEZ" customClass="IconButton" customModule="Material">
+                                                <rect key="frame" x="48" y="0.0" width="32" height="32"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="32" id="4Ry-ik-PMd"/>
+                                                </constraints>
+                                                <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                <state key="normal" image="ic_play_arrow"/>
+                                                <userDefinedRuntimeAttributes>
+                                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                                        <integer key="value" value="16"/>
+                                                    </userDefinedRuntimeAttribute>
+                                                    <userDefinedRuntimeAttribute type="color" keyPath="pulseColor">
+                                                        <color key="value" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                    </userDefinedRuntimeAttribute>
+                                                </userDefinedRuntimeAttributes>
+                                            </button>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="aJy-na-vcu" customClass="IconButton" customModule="Material">
+                                                <rect key="frame" x="96" y="0.0" width="32" height="32"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="32" id="egx-t8-6pC"/>
+                                                </constraints>
+                                                <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                <state key="normal" image="ic_skip_next"/>
+                                                <userDefinedRuntimeAttributes>
+                                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                                        <integer key="value" value="16"/>
+                                                    </userDefinedRuntimeAttribute>
+                                                    <userDefinedRuntimeAttribute type="color" keyPath="pulseColor">
+                                                        <color key="value" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                    </userDefinedRuntimeAttribute>
+                                                </userDefinedRuntimeAttributes>
+                                            </button>
+                                        </subviews>
                                         <constraints>
-                                            <constraint firstAttribute="height" constant="32" id="5ug-YO-6gq"/>
-                                            <constraint firstAttribute="width" constant="32" id="dhb-f9-mj6"/>
+                                            <constraint firstItem="aJy-na-vcu" firstAttribute="top" secondItem="CN2-JO-cFT" secondAttribute="top" id="D2W-cL-hGT"/>
+                                            <constraint firstItem="yKY-6y-fEZ" firstAttribute="top" secondItem="CN2-JO-cFT" secondAttribute="top" id="Ffy-Li-1fi"/>
+                                            <constraint firstAttribute="bottom" secondItem="aJy-na-vcu" secondAttribute="bottom" id="Liz-tF-ZWa"/>
+                                            <constraint firstAttribute="width" constant="128" id="QqN-2o-SLa"/>
+                                            <constraint firstItem="yKY-6y-fEZ" firstAttribute="leading" secondItem="fNm-K2-f2w" secondAttribute="trailing" constant="16" id="R97-G7-Hae"/>
+                                            <constraint firstItem="aJy-na-vcu" firstAttribute="leading" secondItem="yKY-6y-fEZ" secondAttribute="trailing" constant="16" id="aqn-qo-2VS"/>
+                                            <constraint firstAttribute="bottom" secondItem="yKY-6y-fEZ" secondAttribute="bottom" id="fq5-Qd-BDt"/>
+                                            <constraint firstItem="aJy-na-vcu" firstAttribute="width" secondItem="fNm-K2-f2w" secondAttribute="width" id="iZX-Jm-c1y"/>
+                                            <constraint firstAttribute="bottom" secondItem="fNm-K2-f2w" secondAttribute="bottom" id="mqs-3b-4Nr"/>
+                                            <constraint firstAttribute="trailing" secondItem="aJy-na-vcu" secondAttribute="trailing" id="o9w-MK-szE"/>
+                                            <constraint firstItem="fNm-K2-f2w" firstAttribute="top" secondItem="CN2-JO-cFT" secondAttribute="top" id="rm5-iH-GfK"/>
+                                            <constraint firstItem="yKY-6y-fEZ" firstAttribute="width" secondItem="fNm-K2-f2w" secondAttribute="width" id="va3-KZ-WYc"/>
+                                            <constraint firstItem="fNm-K2-f2w" firstAttribute="leading" secondItem="CN2-JO-cFT" secondAttribute="leading" id="zva-Ek-AQJ"/>
                                         </constraints>
-                                        <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                        <state key="normal" image="ic_skip_previous"/>
-                                        <userDefinedRuntimeAttributes>
-                                            <userDefinedRuntimeAttribute type="color" keyPath="pulseColor">
-                                                <color key="value" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                            </userDefinedRuntimeAttribute>
-                                            <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
-                                                <integer key="value" value="16"/>
-                                            </userDefinedRuntimeAttribute>
-                                        </userDefinedRuntimeAttributes>
-                                    </button>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="yKY-6y-fEZ" customClass="IconButton" customModule="Material">
-                                        <rect key="frame" x="287" y="32" width="32" height="32"/>
-                                        <constraints>
-                                            <constraint firstAttribute="height" constant="32" id="4Ry-ik-PMd"/>
-                                            <constraint firstAttribute="width" constant="32" id="E5k-Uz-xuZ"/>
-                                        </constraints>
-                                        <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                        <state key="normal" image="ic_play_arrow"/>
-                                        <userDefinedRuntimeAttributes>
-                                            <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
-                                                <integer key="value" value="16"/>
-                                            </userDefinedRuntimeAttribute>
-                                            <userDefinedRuntimeAttribute type="color" keyPath="pulseColor">
-                                                <color key="value" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                            </userDefinedRuntimeAttribute>
-                                        </userDefinedRuntimeAttributes>
-                                    </button>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="aJy-na-vcu" customClass="IconButton" customModule="Material">
-                                        <rect key="frame" x="335" y="32" width="32" height="32"/>
-                                        <constraints>
-                                            <constraint firstAttribute="width" constant="32" id="Owb-xR-yFN"/>
-                                            <constraint firstAttribute="height" constant="32" id="egx-t8-6pC"/>
-                                        </constraints>
-                                        <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                        <state key="normal" image="ic_skip_next"/>
-                                        <userDefinedRuntimeAttributes>
-                                            <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
-                                                <integer key="value" value="16"/>
-                                            </userDefinedRuntimeAttribute>
-                                            <userDefinedRuntimeAttribute type="color" keyPath="pulseColor">
-                                                <color key="value" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                            </userDefinedRuntimeAttribute>
-                                        </userDefinedRuntimeAttributes>
-                                    </button>
+                                    </view>
                                     <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="0.5" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="bfE-uh-Bzf" customClass="SeekBar" customModule="FireStream" customModuleProvider="target">
                                         <rect key="frame" x="14" y="88" width="347" height="16"/>
                                         <color key="tintColor" red="0.12941177189350128" green="0.58823531866073608" blue="0.9529411792755127" alpha="1" colorSpace="calibratedRGB"/>
@@ -225,23 +242,19 @@
                                     <constraint firstItem="bfE-uh-Bzf" firstAttribute="leading" secondItem="pkg-qc-64p" secondAttribute="leading" constant="16" id="8lH-vu-bzL"/>
                                     <constraint firstItem="0Jx-eu-Tpv" firstAttribute="top" secondItem="pkg-qc-64p" secondAttribute="top" constant="16" id="9HW-Ac-8hB"/>
                                     <constraint firstItem="oKH-ie-nRe" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="g4V-l6-ski" secondAttribute="trailing" constant="8" id="Amk-oS-yes"/>
-                                    <constraint firstItem="yKY-6y-fEZ" firstAttribute="leading" secondItem="fNm-K2-f2w" secondAttribute="trailing" constant="16" id="FR9-82-GvI"/>
-                                    <constraint firstItem="aJy-na-vcu" firstAttribute="centerY" secondItem="0Jx-eu-Tpv" secondAttribute="centerY" id="GWY-8T-KDJ"/>
-                                    <constraint firstItem="fNm-K2-f2w" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="pHa-IP-HzA" secondAttribute="trailing" id="HJz-ve-iyT"/>
                                     <constraint firstItem="pHa-IP-HzA" firstAttribute="top" secondItem="pkg-qc-64p" secondAttribute="top" constant="13" id="Joj-6o-r1W"/>
-                                    <constraint firstAttribute="trailing" secondItem="aJy-na-vcu" secondAttribute="trailing" constant="8" id="LLM-69-EFa"/>
                                     <constraint firstAttribute="trailing" secondItem="bfE-uh-Bzf" secondAttribute="trailing" constant="16" id="MJj-Bl-2k9"/>
+                                    <constraint firstItem="CN2-JO-cFT" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="2sj-LQ-d80" secondAttribute="trailing" id="SA8-cu-m00"/>
                                     <constraint firstAttribute="bottom" secondItem="g4V-l6-ski" secondAttribute="bottom" constant="8" id="UeC-2o-chw"/>
+                                    <constraint firstAttribute="trailing" secondItem="CN2-JO-cFT" secondAttribute="trailing" constant="8" id="Xff-Vj-Ont"/>
                                     <constraint firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="2sj-LQ-d80" secondAttribute="bottom" constant="8" id="cFT-Q2-cTQ"/>
-                                    <constraint firstItem="fNm-K2-f2w" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="2sj-LQ-d80" secondAttribute="trailing" id="eDi-cZ-Zd2"/>
-                                    <constraint firstItem="yKY-6y-fEZ" firstAttribute="centerY" secondItem="0Jx-eu-Tpv" secondAttribute="centerY" id="eJ3-pU-yNK"/>
-                                    <constraint firstItem="aJy-na-vcu" firstAttribute="leading" secondItem="yKY-6y-fEZ" secondAttribute="trailing" constant="16" id="eYs-Rc-PuB"/>
                                     <constraint firstItem="oKH-ie-nRe" firstAttribute="top" secondItem="bfE-uh-Bzf" secondAttribute="bottom" id="gR0-HU-OG5"/>
                                     <constraint firstAttribute="bottom" secondItem="oKH-ie-nRe" secondAttribute="bottom" constant="8" id="jGX-Qd-IJh"/>
-                                    <constraint firstItem="fNm-K2-f2w" firstAttribute="centerY" secondItem="0Jx-eu-Tpv" secondAttribute="centerY" id="lPT-Sw-wGn"/>
                                     <constraint firstItem="bfE-uh-Bzf" firstAttribute="top" secondItem="0Jx-eu-Tpv" secondAttribute="bottom" constant="8" id="pq2-h8-Clt"/>
                                     <constraint firstItem="oKH-ie-nRe" firstAttribute="trailing" secondItem="bfE-uh-Bzf" secondAttribute="trailing" id="tgl-E5-xzG"/>
+                                    <constraint firstItem="CN2-JO-cFT" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="pHa-IP-HzA" secondAttribute="trailing" id="vUs-cE-QVG"/>
                                     <constraint firstItem="2sj-LQ-d80" firstAttribute="top" secondItem="pHa-IP-HzA" secondAttribute="bottom" constant="4" id="vjZ-Is-hnL"/>
+                                    <constraint firstItem="CN2-JO-cFT" firstAttribute="centerY" secondItem="pkg-qc-64p" secondAttribute="centerY" constant="-16" id="wUm-0q-NFl"/>
                                     <constraint firstItem="g4V-l6-ski" firstAttribute="top" secondItem="bfE-uh-Bzf" secondAttribute="bottom" id="ziY-K6-vsK"/>
                                 </constraints>
                             </view>
@@ -281,6 +294,8 @@
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="constraintControlView" destination="QqN-2o-SLa" id="dLw-uo-zRq"/>
+                        <outlet property="controlView" destination="CN2-JO-cFT" id="TBg-WV-0IB"/>
                         <outlet property="imgCurrentAlbumArt" destination="0Jx-eu-Tpv" id="1Gm-j6-0Vf"/>
                         <outlet property="lblCurrentArtist" destination="2sj-LQ-d80" id="KvY-12-dMl"/>
                         <outlet property="lblCurrentSong" destination="pHa-IP-HzA" id="R9w-A5-pIV"/>

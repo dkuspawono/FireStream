@@ -21,7 +21,7 @@ class SongTableViewCell: TableViewCell {
     var showImage: Bool = true {
         didSet {
             constraintImageWidth.constant = showImage ? 64 : 0
-            constraintImageMargin.constant = showImage ? 0 : 16
+            constraintImageMargin.constant = showImage ? 16 : 0
             imgAlbumArt.isHidden = !showImage
         }
     }

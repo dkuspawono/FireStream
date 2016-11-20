@@ -17,6 +17,8 @@ class PartyViewController: MaterialViewController, UITableViewDelegate, UITableV
     @IBOutlet weak var lblElapsed: UILabel!
     @IBOutlet weak var lblDuration: UILabel!
     @IBOutlet weak var seekbar: UISlider!
+    @IBOutlet weak var controlView: UIView!
+    @IBOutlet weak var constraintControlView: NSLayoutConstraint!
     
     @IBAction func BtnAddSongPressed() {
         ControllerInterface.DoSegue(segueCommand: .ToRequestSong, viewController: self, segueType: .Show, extraDataObject: party)
@@ -31,7 +33,9 @@ class PartyViewController: MaterialViewController, UITableViewDelegate, UITableV
     var party: Party! {
         didSet {
             title = party.name
-            (navigationController as? MaterialNavigationController)?.defaultAppBarView.title = party.name
+            if self == navigationController?.viewControllers.last {
+                (navigationController as? MaterialNavigationController)?.defaultAppBarView.title = party.name
+            }
             
             if let firstSong = party.queue.first {
                 lblCurrentSong.text = firstSong.name
@@ -42,6 +46,8 @@ class PartyViewController: MaterialViewController, UITableViewDelegate, UITableV
                 lblDuration.text = TimeInterval(firstSong.duration.msToSeconds).minuteSecond
             }
             tableView.reloadData()
+            controlView.isHidden = !party.isHost
+            constraintControlView.constant = party.isHost ? 128 : 0
         }
     }
     
@@ -94,7 +100,7 @@ class PartyViewController: MaterialViewController, UITableViewDelegate, UITableV
         let cell = tableView.dequeueReusableCell(withIdentifier: "songCell") as! SongTableViewCell
         guard let song = party.queue[safe: indexPath.row + 1] else { return cell }
         cell.lblName.text = song.name
-        cell.lblInfo.text = "\(song.artist)|\(TimeInterval(song.duration.msToSeconds).minuteSecond)"
+        cell.lblInfo.text = "\(song.artist) | \(TimeInterval(song.duration.msToSeconds).minuteSecond)"
         cell.showImage = false
         return cell
     }

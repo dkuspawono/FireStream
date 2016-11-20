@@ -14,10 +14,30 @@ class Party {
     var queue: [Song] = [Song]()
     var requests: [Song] = [Song]()
     var hasPassword: Bool = false
-    var hostId: String = ""
+    var hostToken: String = ""
     var hostName: String = ""
     var attendees: Int = 0
     var progress: Int64 = 0
+    
+    var isHost: Bool {
+        return SpotifyInterface.GetUserId() == hostToken
+    }
+    
+    var dictionaryValue:[String:Any] {
+        let timestamp = Int64((Date().timeIntervalSince1970 * 1000))
+        return [
+            "id": id,
+            "name": name,
+            "queue": queue.map {$0.dictionaryValue},
+            "requests": requests.map {$0.dictionaryValue},
+            "hasPassword": hasPassword,
+            "hostToken": hostToken,
+            "hostName": hostName,
+            "attendees": attendees,
+            "progress": progress,
+            "timestamp": timestamp
+        ]
+    }
     
     init(dict: [String: Any]) {
         if let val = dict["id"] as? String {
@@ -35,8 +55,8 @@ class Party {
         if let val = dict["hasPassword"] as? Bool {
             self.hasPassword = val
         }
-        if let val = dict["hostId"] as? String {
-            self.hostId = val
+        if let val = dict["hostToken"] as? String {
+            self.hostToken = val
         }
         if let val = dict["hostName"] as? String {
             self.hostName = val

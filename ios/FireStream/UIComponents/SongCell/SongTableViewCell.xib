@@ -27,16 +27,16 @@
                             </constraints>
                         </imageView>
                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="DuA-HK-fnj">
-                            <rect key="frame" x="94" y="13" width="83.5" height="40"/>
+                            <rect key="frame" x="94" y="13" width="233" height="40"/>
                             <subviews>
                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Song" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Oau-5z-i1k">
-                                    <rect key="frame" x="0.0" y="0.0" width="83.5" height="17"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="233" height="17"/>
                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                     <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                     <nil key="highlightedColor"/>
                                 </label>
                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Artist|Duration" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="mTD-jU-A4N">
-                                    <rect key="frame" x="0.0" y="25" width="83.5" height="15"/>
+                                    <rect key="frame" x="0.0" y="25" width="233" height="15"/>
                                     <fontDescription key="fontDescription" name=".AppleSystemUIFont" family=".AppleSystemUIFont" pointSize="12"/>
                                     <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                     <nil key="highlightedColor"/>
@@ -49,7 +49,7 @@
                                 <constraint firstAttribute="bottom" secondItem="mTD-jU-A4N" secondAttribute="bottom" id="Tg7-0x-P9y"/>
                                 <constraint firstItem="mTD-jU-A4N" firstAttribute="top" secondItem="Oau-5z-i1k" secondAttribute="bottom" constant="8" id="dML-wC-s6Y"/>
                                 <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="40" id="eLX-nU-gll"/>
-                                <constraint firstAttribute="trailing" secondItem="mTD-jU-A4N" secondAttribute="trailing" id="gqD-rs-VfY"/>
+                                <constraint firstAttribute="trailing" secondItem="mTD-jU-A4N" secondAttribute="trailing" priority="999" id="gqD-rs-VfY"/>
                                 <constraint firstAttribute="trailing" secondItem="Oau-5z-i1k" secondAttribute="trailing" id="msP-zY-IN7"/>
                             </constraints>
                         </view>
@@ -62,6 +62,11 @@
                             </constraints>
                             <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             <state key="normal" image="ic_add"/>
+                            <userDefinedRuntimeAttributes>
+                                <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                    <integer key="value" value="16"/>
+                                </userDefinedRuntimeAttribute>
+                            </userDefinedRuntimeAttributes>
                         </button>
                     </subviews>
                     <constraints>
@@ -74,7 +79,7 @@
                         <constraint firstItem="d9t-ih-ahI" firstAttribute="centerY" secondItem="L5E-Cs-PgT" secondAttribute="centerY" id="Wf1-az-B2A"/>
                         <constraint firstItem="DuA-HK-fnj" firstAttribute="top" secondItem="L5E-Cs-PgT" secondAttribute="top" constant="13" id="emt-YW-OEu"/>
                         <constraint firstAttribute="trailing" secondItem="d9t-ih-ahI" secondAttribute="trailing" constant="16" id="fq7-SH-cVt"/>
-                        <constraint firstItem="d9t-ih-ahI" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="DuA-HK-fnj" secondAttribute="trailing" id="zkQ-Y5-OtQ"/>
+                        <constraint firstItem="d9t-ih-ahI" firstAttribute="leading" secondItem="DuA-HK-fnj" secondAttribute="trailing" id="zkQ-Y5-OtQ"/>
                     </constraints>
                 </view>
             </subviews>

@@ -16,6 +16,16 @@ class Song {
     var albumUrl: String = ""
     var duration: Int64 = 0
     
+    var dictionaryValue:[String:Any] {
+        return [
+            "id": id,
+            "name": name,
+            "artist": artist,
+            "albumUrl": albumUrl,
+            "duration": duration
+        ]
+    }
+    
     init(dict: [String: Any]) {
         if let val = dict["id"] as? String {
             self.id = val
@@ -34,6 +44,21 @@ class Song {
         }
         if let val = dict["duration"] as? Int64 {
             self.duration = val
+        }
+        if let val = dict["album"] as? [String:Any] {
+            if let albumName = val["name"] as? String, album == "" {
+                self.album = albumName
+            }
+            if let images = val["images"] as? [[String:Any]], albumUrl == "" {
+                if let lastUrl = images.last?["url"] as? String {
+                    self.albumUrl = lastUrl
+                }
+            }
+        }
+        if let val = (dict["artists"] as? [[String:Any]])?.first {
+            if let artistName = val["name"] as? String, artist == "" {
+                self.artist = artistName
+            }
         }
     }
 

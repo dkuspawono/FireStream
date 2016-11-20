@@ -75,4 +75,27 @@ class SpotifyInterface: NSObject, SPTAudioStreamingDelegate {
         _spotifySingleton.userId = _spotifySingleton.auth.session.canonicalUsername
         print(_spotifySingleton.userId ?? "")
     }
+    
+    internal class func Search(query: String,
+                               type: String,
+                               postCommandHandler: ((Data?) -> Void)? = nil) {
+        let urlString: String = "https://api.spotify.com/v1/search?q=\(query.addingPercentEncoding(withAllowedCharacters: CharacterSet.urlPathAllowed) ?? "")&type=\(type.addingPercentEncoding(withAllowedCharacters: CharacterSet.urlPathAllowed) ?? "")"
+        guard let url = URL(string: urlString) else { return }
+        var request: URLRequest = URLRequest(url: url)
+        request.httpMethod = "GET"
+        let task = URLSession.shared.dataTask(with: request) { (data: Data?, response: URLResponse?, errorIn: Error?) -> Void in
+            let httpUrlResponse = response as! HTTPURLResponse!
+            if (httpUrlResponse != nil) {
+                let statusCode = httpUrlResponse?.statusCode
+                if statusCode == 200 || statusCode == 201 {
+                    postCommandHandler?(data)
+                }
+            }
+        }
+        task.resume()
+    }
+    
+    class func GetUserId() -> String? {
+        return _spotifySingleton.userId
+    }
 }
