@@ -13,6 +13,7 @@ public class MyApplication extends Application {
 
     SpotifyApi spotifyApi;
     public String spotifyUserId = null;
+    public String spotifyAccessToken = null;
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {

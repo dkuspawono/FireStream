@@ -2,14 +2,18 @@ package io.syntonic.firestream;
 
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Parcelable;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.text.InputType;
+import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -17,6 +21,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AutoCompleteTextView;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -303,7 +308,7 @@ public class MainActivity extends AppCompatActivity {
 
             switch (response.getType()) {
                 case TOKEN:
-
+                    ((MyApplication)getApplicationContext()).spotifyAccessToken = response.getAccessToken();
                     ((MyApplication)getApplicationContext()).spotifyApi.setAccessToken(response.getAccessToken());
                     ((MyApplication)getApplicationContext()).spotifyApi.getService().getMe(new Callback<UserPrivate>() {
                         @Override
@@ -334,13 +339,17 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void createParty(Party party) {
+    private void createParty(final Party party) {
         Utils.getDatabase().getReference(FIREBASE_DATABASE_TABLE_PARTIES).child(party.id).setValue(
                 party, new DatabaseReference.CompletionListener() {
                     @Override
                     public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
                         Toast.makeText(MainActivity.this, databaseError == null ?
                                 "Party Created!" : "Error. Try again later.", Toast.LENGTH_SHORT).show();
+
+                        Intent intent = new Intent(MainActivity.this, PartyActivity.class);
+                        intent.putExtra(CreatePartyActivity.EXTRA_KEY_PARTY, party);
+                        startActivity(intent);
                     }
                 });
     }
@@ -385,7 +394,7 @@ public class MainActivity extends AppCompatActivity {
             holder.partyCount.setText(String.valueOf(party.attendees));
 
             if (song != null) {
-                Picasso.with(context).load(song.album_url).into(holder.partyCurrentImage);
+                Picasso.with(context).load(song.albumUrl).into(holder.partyCurrentImage);
                 holder.partyCurrentImage.setVisibility(View.VISIBLE);
             } else {
                 holder.partyCurrentImage.setVisibility(View.GONE);
@@ -397,8 +406,10 @@ public class MainActivity extends AppCompatActivity {
                 if (song != null) {
                     holder.partyDetails.setText("Host: You | " + "Now Playing: " + party.queue.get(0).name);
                 }
-                holder.itemView.setBackgroundColor(getResources().getColor(R.color.colorAccent));
+                holder.itemView.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDarkest));
             }
+
+            holder.passwordSecured.setVisibility(party.hasPassword ? View.VISIBLE : View.GONE);
         }
 
         public class PartyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -406,6 +417,7 @@ public class MainActivity extends AppCompatActivity {
             TextView partyDetails;
             TextView partyCount;
             ImageView partyCurrentImage;
+            ImageView passwordSecured;
 
             PartyViewHolder(final View itemView) {
                 super(itemView);
@@ -415,11 +427,64 @@ public class MainActivity extends AppCompatActivity {
                 partyDetails = (TextView) itemView.findViewById(R.id.tv_party_details);
                 partyCount = (TextView) itemView.findViewById(R.id.tv_party_count);
                 partyCurrentImage = (ImageView) itemView.findViewById(R.id.iv_party_current_album);
+                passwordSecured = (ImageView) itemView.findViewById(R.id.iv_password_secured);
             }
 
             @Override
             public void onClick(View view) {
                 int position = getAdapterPosition();
+
+                final Party party = parties.get(position);
+                final Intent intent = new Intent(MainActivity.this, PartyActivity.class);
+                intent.putExtra(CreatePartyActivity.EXTRA_KEY_PARTY, parties.get(position));
+
+                final EditText input = new EditText(context);
+
+                if (party.hasPassword) {
+
+                    if (((MyApplication) getApplicationContext()).spotifyUserId != null && ((MyApplication) getApplicationContext()).spotifyUserId.equals(party.hostSpotifyId)) {
+                        startActivity(intent);
+                        return;
+                    }
+
+                    final AlertDialog.Builder alert = new AlertDialog.Builder(context)
+                            .setPositiveButton("Submit", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                }
+                            })
+                            .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    dialogInterface.dismiss();
+                                }
+                            });
+
+                    input.setInputType(InputType.TYPE_CLASS_TEXT| InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                    input.setTransformationMethod(PasswordTransformationMethod.getInstance());
+                    alert.setView(input);
+                    alert.setTitle("Enter Password");
+
+                    final AlertDialog dialog = alert.create();
+                    dialog.show();
+
+                    dialog.getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            String unhashed = input.getText().toString();
+                            String hash = Utils.MD5(unhashed);
+                            if (hash.equals(party.password)) {
+                                startActivity(intent);
+                                dialog.dismiss();
+                            } else {
+                                Toast.makeText(context, "Incorrect password.", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+                } else {
+                    startActivity(intent);
+                }
+
             }
         }
     }

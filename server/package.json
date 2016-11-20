@@ -18,6 +18,7 @@
   "homepage": "https://github.com/SyntonicApps/FireStream#readme",
   "dependencies": {
     "express": "^4.14.0",
+    "fcm-push": "^1.1.2",
     "firebase": "^3.5.3",
     "socket.io": "^1.5.1"
   }

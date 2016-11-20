@@ -118,12 +118,13 @@ public class CreatePartyActivity extends AppCompatActivity {
                                                 String artist = "";
                                                 for (int a = 0; a < track.artists.size(); a++)
                                                     artist += track.artists.get(a).name + (a == track.artists.size() - 1 ? "" : " | ");
+                                                long duration = track.duration_ms;
 
                                                 String image = null;
                                                 if (track.album.images != null)
                                                     image = track.album.images.get(i).url;
 
-                                                party.queue.add(new Song(id, name, image, artist));
+                                                party.queue.add(new Song(id, name, image, artist, duration));
                                             }
 
                                             Intent data = new Intent();
@@ -279,6 +280,7 @@ public class CreatePartyActivity extends AppCompatActivity {
                                     String name = track.name;
                                     String id = track.id;
                                     String artist = "";
+                                    long duration = track.duration_ms;
                                     for (int a = 0; a < track.artists.size(); a++)
                                         artist += track.artists.get(a).name + (a == track.artists.size() - 1 ? "" : " | ");
 
@@ -286,7 +288,7 @@ public class CreatePartyActivity extends AppCompatActivity {
                                     if (track.album.images != null)
                                         image = track.album.images.get(0).url;
 
-                                    party.queue.add(new Song(id, name, image, artist));
+                                    party.queue.add(new Song(id, name, image, artist, duration));
                                 }
 
                                 Intent data = new Intent();

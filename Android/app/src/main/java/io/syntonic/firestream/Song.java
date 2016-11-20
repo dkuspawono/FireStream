@@ -10,19 +10,21 @@ import android.os.Parcelable;
 public class Song implements Parcelable {
 
     public String name;
-    public String album_url;
+    public String albumUrl;
     public String artist;
     public String id;
+    public long duration;
 
     public Song() {
 
     }
 
-    public Song(String id, String name, String album_url, String artist) {
+    public Song(String id, String name, String albumUrl, String artist, long duration) {
         this.id = id;
         this.name = name;
-        this.album_url = album_url;
+        this.albumUrl = albumUrl;
         this.artist = artist;
+        this.duration = duration;
     }
 
     @Override
@@ -33,16 +35,18 @@ public class Song implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.name);
-        dest.writeString(this.album_url);
+        dest.writeString(this.albumUrl);
         dest.writeString(this.artist);
         dest.writeString(this.id);
+        dest.writeLong(this.duration);
     }
 
     protected Song(Parcel in) {
         this.name = in.readString();
-        this.album_url = in.readString();
+        this.albumUrl = in.readString();
         this.artist = in.readString();
         this.id = in.readString();
+        this.duration = in.readLong();
     }
 
     public static final Parcelable.Creator<Song> CREATOR = new Parcelable.Creator<Song>() {
