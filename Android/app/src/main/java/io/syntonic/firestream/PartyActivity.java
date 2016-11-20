@@ -2,17 +2,25 @@ package io.syntonic.firestream;
 
 import android.app.NotificationManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.SeekBar;
@@ -22,10 +30,18 @@ import android.widget.Toast;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.nkzawa.socketio.client.IO;
 import com.github.nkzawa.socketio.client.Socket;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.crash.FirebaseCrash;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.WriterException;
+import com.google.zxing.common.BitMatrix;
+import com.google.zxing.qrcode.QRCodeWriter;
 import com.spotify.sdk.android.player.Config;
 import com.spotify.sdk.android.player.ConnectionStateCallback;
 import com.spotify.sdk.android.player.Error;
@@ -53,6 +69,8 @@ public class PartyActivity extends AppCompatActivity implements ConnectionStateC
 
     private static final String TAG = "PartyActivity";
     private static final int REQUEST_CODE_SONG_SEARCH = 1;
+    private static final String REMOTE_CONFIG_KEY_COMMUNITY_LEVEL_DEEP_LINK = "dynamic_link_party";
+
     Party party;
     private Player mPlayer;
     private Socket mSocket;
@@ -60,6 +78,9 @@ public class PartyActivity extends AppCompatActivity implements ConnectionStateC
     private QueueAdapter mAdapter;
     private RecyclerView recyclerView;
     private LinearLayoutManager linearLayoutManager;
+    private FirebaseRemoteConfig mFirebaseRemoteConfig;
+
+    private Menu mMenu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +94,23 @@ public class PartyActivity extends AppCompatActivity implements ConnectionStateC
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+        mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
+        mFirebaseRemoteConfig.setDefaults(R.xml.remote_config_defaults);
+        mFirebaseRemoteConfig.fetch(0)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            Log.d(TAG, "FirebaseRemoteConfig onComplete successful");
+                            // Once the config is successfully fetched it must be activated before newly fetched
+                            // values are returned.
+                            mFirebaseRemoteConfig.activateFetched();
+                        } else {
+                            Log.d(TAG, "FirebaseRemoteConfig onComplete failure");
+                        }
+                    }
+                });
 
         if (party != null)
             setTitle(party.name);
@@ -121,6 +159,19 @@ public class PartyActivity extends AppCompatActivity implements ConnectionStateC
                 startActivity(intent);
             }
         });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_party, menu);
+        mMenu = menu;
+
+
+        if (((MyApplication) getApplicationContext()).spotifyUserId == null || !((MyApplication) getApplicationContext()).spotifyUserId.equals(party.hostSpotifyId)) {
+            mMenu.findItem(R.id.action_delete_party).setVisible(false);
+        }
+        return true;
     }
 
     @Override
@@ -183,7 +234,7 @@ public class PartyActivity extends AppCompatActivity implements ConnectionStateC
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Party p = dataSnapshot.getValue(Party.class);
-                p.queue.add(b ? 1 : new Random().nextInt(p.queue.size() - 1) + 1, newSong);
+                p.queue.add(b ? (p.queue.size() == 0 ? 0 : 1) : new Random().nextInt(p.queue.size() - 1) + 1, newSong);
                 p.timestamp = System.currentTimeMillis();
 
                 // If app was previously closed
@@ -353,14 +404,21 @@ public class PartyActivity extends AppCompatActivity implements ConnectionStateC
         db.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                if (party.queue.size() == 0)
-                    return;
-
                 Party p = dataSnapshot.getValue(Party.class);
-                String prevSong = party.queue.get(0).id;
+
+                String prevSong = null;
+                if (party != null && party.queue.size() > 0)
+                    prevSong = party.queue.get(0).id;
                 party = p;
                 updateSongs();
-                if (!prevSong.equals(party.queue.get(0).id) && mPlayer != null)
+
+                if (party == null) {
+//                    Toast.makeText(PartyActivity.this, "The party has been closed", Toast.LENGTH_SHORT).show();
+                    finish();
+                    return;
+                }
+
+                if (!(prevSong != null && prevSong.equals(party.queue.get(0).id)) && mPlayer != null && party.queue.size() > 0)
                     mPlayer.playUri(null, "spotify:track:" + party.queue.get(0).id, 0, party.progress);
             }
 
@@ -384,12 +442,64 @@ public class PartyActivity extends AppCompatActivity implements ConnectionStateC
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // handle arrow click here
         if (item.getItemId() == android.R.id.home) {
-            finish(); // close this activity and return to preview activity (if there is any)
+            finish();
+        } else if (item.getItemId() == R.id.action_generate_qr) {
+            if (party == null)
+                return true;
+
+            LayoutInflater inflater = getLayoutInflater();
+            View dialogView = inflater.inflate(R.layout.dialog_qr_code, null);
+
+            QRCodeWriter writer = new QRCodeWriter();
+            try {
+                String baseUrl = mFirebaseRemoteConfig.getString(REMOTE_CONFIG_KEY_COMMUNITY_LEVEL_DEEP_LINK);
+                final String url = baseUrl.replace("partyId", party.id);
+                BitMatrix bitMatrix = writer.encode(url, BarcodeFormat.QR_CODE, 200, 200);
+                int width = bitMatrix.getWidth();
+                int height = bitMatrix.getHeight();
+                Bitmap bmp = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
+                for (int x = 0; x < width; x++) {
+                    for (int y = 0; y < height; y++) {
+                        bmp.setPixel(x, y, bitMatrix.get(x, y) ? Color.BLACK : Color.WHITE);
+                    }
+                }
+                ((ImageView) dialogView.findViewById(R.id.image_view_level_qr_code)).setImageBitmap(bmp);
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(PartyActivity.this)
+                        .setView(dialogView)
+                        .setPositiveButton(android.R.string.ok, null);
+
+                builder.create()
+                        .show();
+
+            } catch (WriterException e) {
+                Log.d(TAG, "Exception caught trying to generate QR code: " + e.getMessage());
+                FirebaseCrash.report(new Exception("Exception caught trying to generate QR code: " + e.getMessage()));
+                Toast.makeText(PartyActivity.this, "An error occurred, try again later", Toast.LENGTH_SHORT).show();
+            }
+        } else if (item.getItemId() == R.id.action_delete_party) {
+            if (((MyApplication) getApplicationContext()).spotifyUserId == null || !((MyApplication) getApplicationContext()).spotifyUserId.equals(party.hostSpotifyId)) {
+                Toast.makeText(PartyActivity.this, "Only the host can perform this action", Toast.LENGTH_SHORT).show();
+                return true;
+            } else {
+                deleteParty();
+            }
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void deleteParty() {
+        Utils.getDatabase().getReference(MainActivity.FIREBASE_DATABASE_TABLE_PARTIES).child(party.id).removeValue(new DatabaseReference.CompletionListener() {
+            @Override
+            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                if (databaseError == null)
+                    Toast.makeText(PartyActivity.this, "Party deleted", Toast.LENGTH_SHORT).show();
+                else
+                    Log.d(TAG, databaseError.getMessage());
+            }
+        });
     }
 
     public class QueueAdapter extends RecyclerView.Adapter<QueueAdapter.QueueViewHolder> {
@@ -445,8 +555,21 @@ public class PartyActivity extends AppCompatActivity implements ConnectionStateC
 
             @Override
             public void onClick(View view) {
-                int position = getAdapterPosition();
 
+                if (((MyApplication) getApplicationContext()).spotifyUserId == null || !((MyApplication) getApplicationContext()).spotifyUserId.equals(party.hostSpotifyId))
+                    return;
+
+                Song first = party.queue.remove(0);
+                party.queue.add(first);
+
+                int position = getAdapterPosition();
+                Song toPlay = party.queue.remove(position);
+                party.queue.add(0, toPlay);
+                party.progress = 0;
+                updateParty();
+                updateSongs();
+                if (mPlayer != null && party.queue.size() > 0)
+                    mPlayer.playUri(null, "spotify:track:" + party.queue.get(0).id, 0, party.progress);
             }
         }
     }

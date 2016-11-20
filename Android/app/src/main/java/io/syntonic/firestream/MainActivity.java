@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -26,6 +27,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.clans.fab.FloatingActionButton;
+import com.google.android.gms.appinvite.AppInvite;
+import com.google.android.gms.appinvite.AppInviteInvitationResult;
+import com.google.android.gms.appinvite.AppInviteReferral;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.ResultCallback;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -50,7 +57,7 @@ import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
 
     public static final String FIREBASE_DATABASE_TABLE_PARTIES = "parties";
     public static final String EXTRA_SPOTIFY_TOKEN = "EXTRA_SPOTIFY_TOKEN";
@@ -61,6 +68,7 @@ public class MainActivity extends AppCompatActivity {
     private static final int REQUEST_CODE_CREATE_PARTY = 1;
 
     private ArrayList<Party> parties = new ArrayList<>();
+
     private PartyAdapter partyAdapter;
     private RecyclerView recyclerView;
     private LinearLayoutManager linearLayoutManager;
@@ -102,6 +110,103 @@ public class MainActivity extends AppCompatActivity {
                 AuthenticationClient.openLoginActivity(MainActivity.this, REQUEST_CODE_SPOTIFY_LOGIN, request);
             }
         });
+
+        // Build GoogleApiClient with AppInvite API for receiving deep links
+        GoogleApiClient mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .enableAutoManage(this, this)
+                .addApi(AppInvite.API)
+                .build();
+
+        // Check if this app was launched from a deep link. Setting autoLaunchDeepLink to true
+        // would automatically launch the deep link if one is found.
+        boolean autoLaunchDeepLink = false;
+        AppInvite.AppInviteApi.getInvitation(mGoogleApiClient, this, autoLaunchDeepLink)
+                .setResultCallback(
+                        new ResultCallback<AppInviteInvitationResult>() {
+                            @Override
+                            public void onResult(@NonNull AppInviteInvitationResult result) {
+                                if (result.getStatus().isSuccess()) {
+                                    // Extract deep link from Intent
+                                    Intent intent = result.getInvitationIntent();
+                                    String deepLink = AppInviteReferral.getDeepLink(intent);
+
+                                    String partyId = deepLink.substring(deepLink.lastIndexOf("/") + 1);
+                                    findPartyAndOpen(partyId);
+                                } else {
+                                    Log.d(TAG, "getInvitation: no deep link found.");
+                                }
+                            }
+                        });
+    }
+
+    private void openParty(final Party party, final Context context) {
+        final Intent intent = new Intent(MainActivity.this, PartyActivity.class);
+        intent.putExtra(CreatePartyActivity.EXTRA_KEY_PARTY, party);
+
+        final EditText input = new EditText(context);
+
+        if (party.hasPassword) {
+
+            if (((MyApplication) getApplicationContext()).spotifyUserId != null && ((MyApplication) getApplicationContext()).spotifyUserId.equals(party.hostSpotifyId)) {
+                startActivity(intent);
+                return;
+            }
+
+            final AlertDialog.Builder alert = new AlertDialog.Builder(context)
+                    .setPositiveButton("Submit", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                        }
+                    })
+                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            dialogInterface.dismiss();
+                        }
+                    });
+
+            input.setInputType(InputType.TYPE_CLASS_TEXT| InputType.TYPE_TEXT_VARIATION_PASSWORD);
+            input.setTransformationMethod(PasswordTransformationMethod.getInstance());
+            alert.setView(input);
+            alert.setTitle("Enter Password");
+
+            final AlertDialog dialog = alert.create();
+            dialog.show();
+
+            dialog.getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    String unhashed = input.getText().toString();
+                    String hash = Utils.MD5(unhashed);
+                    if (hash.equals(party.password)) {
+                        startActivity(intent);
+                        dialog.dismiss();
+                    } else {
+                        Toast.makeText(context, "Incorrect password.", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+        } else {
+            startActivity(intent);
+        }
+    }
+
+    private void findPartyAndOpen(String partyId) {
+        Utils.getDatabase().getReference(MainActivity.FIREBASE_DATABASE_TABLE_PARTIES).child(partyId).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Party p = dataSnapshot.getValue(Party.class);
+                if (p != null)
+                    openParty(p, MainActivity.this);
+                else
+                    Toast.makeText(MainActivity.this, "An error occured, this party may no longer exist.", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 
     private void subscribeToParties() {
@@ -110,7 +215,7 @@ public class MainActivity extends AppCompatActivity {
 
         final DatabaseReference db = Utils.getDatabase().getReference(FIREBASE_DATABASE_TABLE_PARTIES);
 
-        Query q = db.orderByChild("attendees").limitToLast(50);
+        Query q = db.orderByChild("attendees");
         q.addChildEventListener((new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
@@ -143,8 +248,8 @@ public class MainActivity extends AppCompatActivity {
                     if (thisParty.id.equals(p.id)) {
                         i.remove();
                     }
-                    displayParties();
                 }
+                displayParties();
             }
 
             @Override
@@ -163,6 +268,15 @@ public class MainActivity extends AppCompatActivity {
 
     private void displayParties() {
         if (parties.size() > 0) {
+
+            // Filter out based on search query
+            if (mSearchQuery != null && !mSearchQuery.isEmpty()) {
+                Iterator<Party> it = parties.iterator();
+                while( it.hasNext() ) {
+                    Party foo = it.next();
+                    if (!foo.nameLower.contains(mSearchQuery)) it.remove();
+                }
+            }
 
             // Sort by your parties, then # attendees
             if (((MyApplication) getApplicationContext()).spotifyUserId != null) {
@@ -263,37 +377,7 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public boolean onQueryTextChange(String newText) {
                     mSearchQuery = (newText != null && newText.length() > 0) ? newText.toLowerCase() : null;
-
-                    if (mSearchQuery == null || mSearchQuery.isEmpty()) {
-                        subscribeToParties();
-                    } else {
-
-                        parties = new ArrayList<>();
-
-                        final DatabaseReference db = Utils.getDatabase().getReference(FIREBASE_DATABASE_TABLE_PARTIES);
-                        Query q = db.orderByChild("nameLower").startAt(mSearchQuery).endAt(mSearchQuery + '~').limitToFirst(50);
-                        q.addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
-                                if (dataSnapshot.getChildrenCount() > 0) {
-                                    Iterable<DataSnapshot> children = dataSnapshot.getChildren();
-                                    Iterator<DataSnapshot> iterator = children.iterator();
-                                    while (iterator.hasNext()) {
-                                        Party p = iterator.next().getValue(Party.class);
-                                        parties.add(p);
-                                    }
-                                }
-                                displayParties();
-                            }
-
-                            @Override
-                            public void onCancelled(DatabaseError databaseError) {
-                                Log.d(TAG, "Database error: " + databaseError.getMessage());
-                                progressBar.setVisibility(View.GONE);
-                            }
-                        });
-                    }
-
+                    displayParties();
                     return true;
                 }
                 @Override
@@ -362,6 +446,11 @@ public class MainActivity extends AppCompatActivity {
                         startActivity(intent);
                     }
                 });
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
     }
 
     public class PartyAdapter extends RecyclerView.Adapter<PartyAdapter.PartyViewHolder> {
@@ -451,55 +540,7 @@ public class MainActivity extends AppCompatActivity {
                 int position = getAdapterPosition();
 
                 final Party party = parties.get(position);
-                final Intent intent = new Intent(MainActivity.this, PartyActivity.class);
-                intent.putExtra(CreatePartyActivity.EXTRA_KEY_PARTY, parties.get(position));
-
-                final EditText input = new EditText(context);
-
-                if (party.hasPassword) {
-
-                    if (((MyApplication) getApplicationContext()).spotifyUserId != null && ((MyApplication) getApplicationContext()).spotifyUserId.equals(party.hostSpotifyId)) {
-                        startActivity(intent);
-                        return;
-                    }
-
-                    final AlertDialog.Builder alert = new AlertDialog.Builder(context)
-                            .setPositiveButton("Submit", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
-                                }
-                            })
-                            .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
-                                    dialogInterface.dismiss();
-                                }
-                            });
-
-                    input.setInputType(InputType.TYPE_CLASS_TEXT| InputType.TYPE_TEXT_VARIATION_PASSWORD);
-                    input.setTransformationMethod(PasswordTransformationMethod.getInstance());
-                    alert.setView(input);
-                    alert.setTitle("Enter Password");
-
-                    final AlertDialog dialog = alert.create();
-                    dialog.show();
-
-                    dialog.getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            String unhashed = input.getText().toString();
-                            String hash = Utils.MD5(unhashed);
-                            if (hash.equals(party.password)) {
-                                startActivity(intent);
-                                dialog.dismiss();
-                            } else {
-                                Toast.makeText(context, "Incorrect password.", Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                    });
-                } else {
-                    startActivity(intent);
-                }
+                openParty(party, context);
 
             }
         }

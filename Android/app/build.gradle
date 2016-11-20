@@ -41,6 +41,8 @@ dependencies {
     compile 'com.google.firebase:firebase-messaging:9.8.0'
     compile 'com.google.firebase:firebase-database:9.8.0'
     compile 'com.google.firebase:firebase-crash:9.8.0'
+    compile 'com.google.firebase:firebase-invites:9.8.0'
+    compile 'com.google.firebase:firebase-config:9.8.0'
 
     compile 'com.spotify.sdk:spotify-auth:beta23-noconnect-2.20b@aar'
     compile 'com.spotify.sdk:spotify-player:beta23-noconnect-2.20b@aar'
@@ -52,6 +54,7 @@ dependencies {
     compile 'com.loopj.android:android-async-http:1.4.9'
     compile 'com.github.kaaes:spotify-web-api-android:0.4.1'
     compile 'com.github.nkzawa:socket.io-client:0.3.0'
+    compile 'com.journeyapps:zxing-android-embedded:3.3.0'
 }
 
 apply plugin: 'com.google.gms.google-services'
