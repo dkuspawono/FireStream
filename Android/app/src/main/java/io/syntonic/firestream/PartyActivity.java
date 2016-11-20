@@ -95,6 +95,11 @@ public class PartyActivity extends AppCompatActivity implements ConnectionStateC
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
+        if (party != null) {
+            ((TextView) findViewById(R.id.toolbar_title)).setText(party.name);
+            ((TextView) findViewById(R.id.toolbar_subtitle)).setText("Host: " + party.hostName);
+        }
+
         mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
         mFirebaseRemoteConfig.setDefaults(R.xml.remote_config_defaults);
         mFirebaseRemoteConfig.fetch(0)
@@ -111,9 +116,6 @@ public class PartyActivity extends AppCompatActivity implements ConnectionStateC
                         }
                     }
                 });
-
-        if (party != null)
-            setTitle(party.name);
 
         updateSongs();
         subscribeToParty();
@@ -544,7 +546,7 @@ public class PartyActivity extends AppCompatActivity implements ConnectionStateC
             holder.songDetails.setText(details);
         }
 
-        public class QueueViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        public class QueueViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
             TextView songName;
             TextView songDetails;
 
@@ -552,6 +554,7 @@ public class PartyActivity extends AppCompatActivity implements ConnectionStateC
                 super(itemView);
 
                 itemView.setOnClickListener(this);
+                itemView.setOnLongClickListener(this);
                 songName = (TextView) itemView.findViewById(R.id.tv_queue_song_name);
                 songDetails = (TextView) itemView.findViewById(R.id.tv_queue_song_details);
             }
@@ -574,6 +577,19 @@ public class PartyActivity extends AppCompatActivity implements ConnectionStateC
                 updateSongs();
                 if (mPlayer != null && party.queue.size() > 0)
                     mPlayer.playUri(null, "spotify:track:" + party.queue.get(0).id, 0, party.progress);
+            }
+
+            @Override
+            public boolean onLongClick(View view) {
+                if (((MyApplication) getApplicationContext()).spotifyUserId == null || !((MyApplication) getApplicationContext()).spotifyUserId.equals(party.hostSpotifyId))
+                    return true;
+
+                int position = getAdapterPosition();
+                party.queue.remove(position + 1);
+                updateParty();
+                updateSongs();
+
+                return true;
             }
         }
     }
