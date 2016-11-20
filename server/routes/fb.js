@@ -1,13 +1,13 @@
 const firebase = require('firebase');
 const FCM = require('fcm-push');
 
-let serverKey = 'AIzaSyBzTq646tEIVVvwr-QLxjURAcAoFfX7F60';
+let serverKey = 'AIzaSyAOfX9IyRumoiK-daOJyYPM3AZY2wBWAEQ';
 let fcm = new FCM(serverKey);
 
 var parties = [];
 exports.init = () => {
 	firebase.initializeApp({
-		apiKey: serverKey,
+		apiKey: 'AIzaSyBDlzcTeK4FU7YZkUBO3hiI0_ZuhweKSXU',
 		authDomain: 'firestream-4e998.firebaseapp.com',
 		databaseURL: 'https://firestream-4e998.firebaseio.com'
 	});
@@ -38,19 +38,33 @@ exports.init = () => {
 	setInterval(function() {
         for (var i = 0; i < parties.length; i++) {
             var party = parties[i];
+            if (party.isPlaying) {
+                party.progress += interval;
 
-            if (!party.isPlaying)
-                continue;
+                // Check if move to next song
+                if (typeof(party.queue) !== 'undefined' && party.queue.length > 0 && party.progress >= party.queue[0].duration) {
+                    party.progress = 0;
+                    party.queue.push(party.queue.shift());
+                }
+            }
 
-            party.progress += interval;
+            if (party.hostToken && party.requests && party.requests.length > 0) {
+                for (var j = 0; j < party.requests.length; j++) {
+                    var data = party.requests[j];
+                    data.partyId = party.id;
 
-            // Check if move to next song
-            if (typeof(party.queue) !== 'undefined' && party.queue.length > 0 && party.progress >= party.queue[0].duration) {
-                party.progress = 0;
-                party.queue.push(party.queue.shift());
+                    exports.sendMessage({
+                        endpoint: party.hostToken,
+                        title: "Song Request for Party '" + party.name + "'",
+                        body: "The song: '" + party.requests[j].name + "' by " + party.requests[j].artist + " has been requested.",
+                        songData: data
+                    });
+                }
+                party.requests = [];
             }
 
             party.timestamp = new Date().getTime();
+            parties[i] = party;
             firebase.database().ref('parties').child(party.id).set(party);
         }
 	}, interval);
@@ -58,15 +72,19 @@ exports.init = () => {
 
 
 exports.sendMessage = (data) => {
+    console.log('sending message: ' + JSON.stringify(data));
 	var message = {
 		to: data.endpoint,
 		data: {
-			songData: data.songData
-		},
-		notification: {
 			title: data.title,
-			body: data.body
-		}
+			body: data.body,
+			data: data.songData,
+            code: "0"
+		},
+		// notification: {
+		// 	title: data.title,
+		// 	body: data.body
+		// }
 	};
 
 	//callback style

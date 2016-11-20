@@ -1,4 +1,11 @@
 <resources>
     <string name="app_name">FireStream</string>
     <string name="spotify_client_id">c2c2a7e68fad4bcca474b814fb549c07</string>
+    <string-array name="search_defaults">
+        <item>Young Thug</item>
+        <item>Kendrick Lamar</item>
+        <item>The Weeknd</item>
+        <item>Ariana Grande</item>
+        <item>Drake</item>
+    </string-array>
 </resources>

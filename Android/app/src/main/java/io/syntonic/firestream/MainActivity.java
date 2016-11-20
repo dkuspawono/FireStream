@@ -4,10 +4,9 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.Parcelable;
+import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
@@ -33,21 +32,18 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.spotify.sdk.android.authentication.AuthenticationClient;
 import com.spotify.sdk.android.authentication.AuthenticationRequest;
 import com.spotify.sdk.android.authentication.AuthenticationResponse;
 import com.squareup.picasso.Picasso;
 
-import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 
-import kaaes.spotify.webapi.android.models.Pager;
-import kaaes.spotify.webapi.android.models.PlaylistTrack;
-import kaaes.spotify.webapi.android.models.Track;
 import kaaes.spotify.webapi.android.models.UserPrivate;
 import me.zhanghai.android.materialprogressbar.MaterialProgressBar;
 import retrofit.Callback;
@@ -69,11 +65,11 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private LinearLayoutManager linearLayoutManager;
     private MaterialProgressBar progressBar;
+    private TextView emptyListTextView;
 
     private String mSearchQuery;
     private SearchView searchView;
     private SearchView.OnQueryTextListener queryTextListener;
-    private TextView emptyListTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -350,6 +346,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void createParty(final Party party) {
+        String deviceToken = FirebaseInstanceId.getInstance().getToken();
+        if (deviceToken != null)
+            party.hostToken = deviceToken;
+
         Utils.getDatabase().getReference(FIREBASE_DATABASE_TABLE_PARTIES).child(party.id).setValue(
                 party, new DatabaseReference.CompletionListener() {
                     @Override

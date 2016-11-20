@@ -46,4 +46,10 @@ public class Utils {
         }
         return "";
     }
+
+    public static String millisToString(long duration) {
+        long mins = duration / 60000;
+        long secs = (duration - (60000 * mins)) / 1000;
+        return String.valueOf(mins) + ":" + (secs < 10 ? "0" : "") + String.valueOf(secs);
+    }
 }

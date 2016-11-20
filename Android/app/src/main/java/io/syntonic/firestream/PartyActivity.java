@@ -1,28 +1,25 @@
 package io.syntonic.firestream;
 
+import android.app.NotificationManager;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.text.InputType;
-import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.clans.fab.FloatingActionButton;
 import com.github.nkzawa.socketio.client.IO;
 import com.github.nkzawa.socketio.client.Socket;
 import com.google.firebase.database.DataSnapshot;
@@ -38,12 +35,24 @@ import com.spotify.sdk.android.player.Spotify;
 import com.spotify.sdk.android.player.SpotifyPlayer;
 import com.squareup.picasso.Picasso;
 
-import java.net.URISyntaxException;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
+import java.util.Random;
+
+import static io.syntonic.firestream.MyFirebaseMessagingService.EXTRA_KEY_SONG_REQUEST;
+import static io.syntonic.firestream.MyFirebaseMessagingService.EXTRA_KEY_SONG_REQUEST_ACTION;
+import static io.syntonic.firestream.MyFirebaseMessagingService.EXTRA_NOTIFICATION_INT;
+import static io.syntonic.firestream.MyFirebaseMessagingService.REQUEST_CODE_SONG_REQUEST_ADD_TO_FRONT;
+import static io.syntonic.firestream.MyFirebaseMessagingService.REQUEST_CODE_SONG_REQUEST_REJECT;
+import static io.syntonic.firestream.MyFirebaseMessagingService.REQUEST_CODE_SONG_REQUEST_SHUFFLE_IN;
+import static io.syntonic.firestream.Utils.millisToString;
 
 public class PartyActivity extends AppCompatActivity implements ConnectionStateCallback, Player.NotificationCallback {
 
     private static final String TAG = "PartyActivity";
+    private static final int REQUEST_CODE_SONG_SEARCH = 1;
     Party party;
     private Player mPlayer;
     private Socket mSocket;
@@ -58,12 +67,15 @@ public class PartyActivity extends AppCompatActivity implements ConnectionStateC
         setContentView(R.layout.activity_party);
 
         party = getIntent().getParcelableExtra(CreatePartyActivity.EXTRA_KEY_PARTY);
+        handleNotificationIntent(getIntent());
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-        setTitle(party.name);
+
+        if (party != null)
+            setTitle(party.name);
 
         updateSongs();
         subscribeToParty();
@@ -73,7 +85,7 @@ public class PartyActivity extends AppCompatActivity implements ConnectionStateC
         recyclerView.setLayoutManager(linearLayoutManager);
 
         // If we are host, initialize player
-        if (((MyApplication) getApplicationContext()).spotifyUserId != null && ((MyApplication) getApplicationContext()).spotifyUserId.equals(party.hostSpotifyId) &&
+        if (party != null && ((MyApplication) getApplicationContext()).spotifyUserId != null && ((MyApplication) getApplicationContext()).spotifyUserId.equals(party.hostSpotifyId) &&
                 ((MyApplication) getApplicationContext()).spotifyAccessToken != null) {
             Config playerConfig = new Config(this, ((MyApplication) getApplicationContext()).spotifyAccessToken, getString(R.string.spotify_client_id));
             Spotify.getPlayer(playerConfig, this, new SpotifyPlayer.InitializationObserver() {
@@ -99,6 +111,104 @@ public class PartyActivity extends AppCompatActivity implements ConnectionStateC
         } catch (Exception e) {
             Log.d(TAG, e.getMessage());
         }
+
+        FloatingActionButton requestSong = (FloatingActionButton) findViewById(R.id.fab_request_song);
+        requestSong.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(PartyActivity.this, SongSearchActivity.class);
+                intent.putExtra(CreatePartyActivity.EXTRA_KEY_PARTY, party);
+                startActivity(intent);
+            }
+        });
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        Log.d(TAG, "onNewIntent");
+        super.onNewIntent(intent);
+        setIntent(intent);
+
+        handleNotificationIntent(intent);
+    }
+
+    private void handleNotificationIntent(Intent intent) {
+        Bundle bundle = getIntent().getExtras();
+
+        if (!bundle.containsKey(EXTRA_KEY_SONG_REQUEST))
+            return;
+
+        String data = bundle.getString(EXTRA_KEY_SONG_REQUEST);
+
+        // Dismiss the notification
+        NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        manager.cancel(bundle.getInt(EXTRA_NOTIFICATION_INT, -1));
+
+
+        // Handle the notification's action
+        try {
+            JSONObject song = new JSONObject(data);
+            int action = bundle.getInt(EXTRA_KEY_SONG_REQUEST_ACTION);
+
+            String partyId = song.getString("partyId");
+
+            String id = song.getString("id");
+            String name = song.getString("name");
+            String image = song.getString("albumUrl");
+            String artist = song.getString("artist");
+            long duration = song.getLong("duration");
+
+            Song newSong = new Song(id, name, image, artist, duration);
+
+            switch (action) {
+                case REQUEST_CODE_SONG_REQUEST_ADD_TO_FRONT:
+                    getPartyAndAddSong(partyId, newSong, true);
+                    break;
+                case REQUEST_CODE_SONG_REQUEST_SHUFFLE_IN:
+                    getPartyAndAddSong(partyId, newSong, false);
+                    break;
+                case REQUEST_CODE_SONG_REQUEST_REJECT:
+
+                    break;
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void getPartyAndAddSong(final String partyId, final Song newSong, final boolean b) {
+        Log.d(TAG, "getPartyAndAddSong");
+
+        Utils.getDatabase().getReference(MainActivity.FIREBASE_DATABASE_TABLE_PARTIES).child(partyId).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Party p = dataSnapshot.getValue(Party.class);
+                p.queue.add(b ? 1 : new Random().nextInt(p.queue.size() - 1) + 1, newSong);
+                p.timestamp = System.currentTimeMillis();
+
+                // If app was previously closed
+                if (party == null) {
+                    party = p;
+                    updateSongs();
+                    subscribeToParty();
+                }
+
+
+                Utils.getDatabase().getReference(MainActivity.FIREBASE_DATABASE_TABLE_PARTIES).child(partyId).setValue(
+                        p, new DatabaseReference.CompletionListener() {
+                            @Override
+                            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                                if (databaseError == null)
+                                    Toast.makeText(PartyActivity.this, "Song added", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 
     private void updateSongs() {
@@ -272,12 +382,6 @@ public class PartyActivity extends AppCompatActivity implements ConnectionStateC
                 });
     }
 
-    private String millisToString(long duration) {
-        long mins = duration / 60000;
-        long secs = (duration - (60000 * mins)) / 1000;
-        return String.valueOf(mins) + ":" + (secs < 10 ? "0" : "") + String.valueOf(secs);
-    }
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // handle arrow click here
@@ -318,8 +422,6 @@ public class PartyActivity extends AppCompatActivity implements ConnectionStateC
 
             if (song.name != null)
                 holder.songName.setText(song.name);
-
-
 
             String details = "";
             if (song.artist != null)

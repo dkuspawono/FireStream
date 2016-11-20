@@ -40,6 +40,7 @@ dependencies {
     compile 'com.google.firebase:firebase-core:9.8.0'
     compile 'com.google.firebase:firebase-messaging:9.8.0'
     compile 'com.google.firebase:firebase-database:9.8.0'
+    compile 'com.google.firebase:firebase-crash:9.8.0'
 
     compile 'com.spotify.sdk:spotify-auth:beta23-noconnect-2.20b@aar'
     compile 'com.spotify.sdk:spotify-player:beta23-noconnect-2.20b@aar'
