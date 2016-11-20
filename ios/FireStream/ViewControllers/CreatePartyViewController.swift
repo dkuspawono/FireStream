@@ -12,6 +12,10 @@ class CreatePartyViewController: MaterialViewController {
     
     @IBOutlet weak var txtName: UITextField!
     @IBOutlet weak var txtPass: UITextField!
+    
+    @IBAction func cancelPressed() {
+        self.dismiss(animated: true, completion: nil)
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()

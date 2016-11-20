@@ -8,10 +8,11 @@
 
 import UIKit
 
-class MaterialViewController: UIViewController {
+class MaterialViewController: UIViewController, AppBarViewDelegate {
 
     var showAppBar = true
     var showAppBarShadow = true
+    var showBtnSearch: Bool = false
     
     var detailText: String?
     

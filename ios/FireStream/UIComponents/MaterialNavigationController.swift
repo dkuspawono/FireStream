@@ -115,6 +115,8 @@ class MaterialNavigationController: UINavigationController {
             doShowShaddow = materialController.showAppBarShadow
             doShowAppBar = materialController.showAppBar
             defaultAppBarView.detailText = materialController.detailText
+            defaultAppBarView.showBtnSearch = materialController.showBtnSearch
+            defaultAppBarView.delegate = materialController
         } else {
             doShowShaddow = false
             doShowAppBar = false

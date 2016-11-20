@@ -16,7 +16,6 @@ class PartySearchViewController: MaterialViewController, UITableViewDelegate, UI
     let FIREBASE_DATABASE_TABLE_PARTIES = "parites"
     
     @IBOutlet weak var tableView: UITableView!
-    @IBOutlet weak var superViewSearchBar: UIView!
     
     @IBAction func BtnAddPressed() {
         if SpotifyInterface.IsInitilized() {
@@ -30,11 +29,16 @@ class PartySearchViewController: MaterialViewController, UITableViewDelegate, UI
         }
     }
     
-    let searchController = UISearchController(searchResultsController: nil)
     var parties: [Party] = [Party]()
 
     override var showAppBarShadow: Bool {
         get { return false }
+        set { }
+    }
+    
+    
+    override var showBtnSearch: Bool {
+        get { return true }
         set { }
     }
     
@@ -45,26 +49,6 @@ class PartySearchViewController: MaterialViewController, UITableViewDelegate, UI
         tableView.tableFooterView = UIView(frame: CGRect.zero)
         tableView.backgroundColor = UIColor.colorBg
         tableView.register(UINib(nibName: "PartyTableViewCell", bundle: nil), forCellReuseIdentifier: "partyCell")
-        
-        searchController.searchResultsUpdater = self
-        searchController.hidesNavigationBarDuringPresentation = false
-        searchController.dimsBackgroundDuringPresentation = false
-        searchController.searchBar.sizeToFit()
-        superViewSearchBar.addSubview(searchController.searchBar)
-        self.definesPresentationContext = true
-        
-        if let textField = searchController.searchBar.value(forKey: "searchField") as? UITextField {
-            textField.adjustsFontSizeToFitWidth = true
-            textField.borderStyle = .none
-            textField.textColor = .black
-            textField.tintColor = .black
-            textField.backgroundColor = .white
-            textField.layer.cornerRadius = 2
-        }
-        searchController.searchBar.layer.cornerRadius = 2
-        searchController.searchBar.searchBarStyle = .minimal
-        searchController.searchBar.tintColor = .white
-        searchController.searchBar.backgroundColor = nil
         
         tableView.rowHeight = UITableViewAutomaticDimension
         tableView.estimatedRowHeight = 90

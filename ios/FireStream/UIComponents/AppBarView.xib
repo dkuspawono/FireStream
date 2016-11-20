@@ -16,29 +16,53 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="EQh-kw-4kP">
-                    <rect key="frame" x="48" y="14.5" width="279" height="27.5"/>
+                    <rect key="frame" x="48" y="13" width="327" height="30"/>
                     <subviews>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="VIz-Tm-SfA">
-                            <rect key="frame" x="0.0" y="4" width="279" height="19.5"/>
+                            <rect key="frame" x="0.0" y="4" width="41.5" height="22"/>
                             <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="16"/>
                             <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             <nil key="highlightedColor"/>
                         </label>
-                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="XiZ-Sz-N4f">
-                            <rect key="frame" x="0.0" y="27.5" width="279" height="0.0"/>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="252" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="XiZ-Sz-N4f">
+                            <rect key="frame" x="0.0" y="30" width="0.0" height="0.0"/>
                             <fontDescription key="fontDescription" type="system" pointSize="12"/>
                             <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             <nil key="highlightedColor"/>
                         </label>
+                        <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="6jW-fD-8v5" customClass="FloatLabelTextField" customModule="FireStream" customModuleProvider="target">
+                            <rect key="frame" x="327" y="0.0" width="0.0" height="30"/>
+                            <constraints>
+                                <constraint firstAttribute="width" id="F6I-dM-vnH"/>
+                            </constraints>
+                            <nil key="textColor"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                            <textInputTraits key="textInputTraits"/>
+                            <userDefinedRuntimeAttributes>
+                                <userDefinedRuntimeAttribute type="color" keyPath="titleTextColour">
+                                    <color key="value" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                </userDefinedRuntimeAttribute>
+                                <userDefinedRuntimeAttribute type="color" keyPath="titleActiveTextColour">
+                                    <color key="value" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                </userDefinedRuntimeAttribute>
+                            </userDefinedRuntimeAttributes>
+                            <connections>
+                                <action selector="textFieldDidChangeWithTextField:" destination="iN0-l3-epB" eventType="editingChanged" id="S4Z-rZ-pPu"/>
+                            </connections>
+                        </textField>
                     </subviews>
                     <constraints>
-                        <constraint firstAttribute="trailing" secondItem="XiZ-Sz-N4f" secondAttribute="trailing" id="ADb-dm-Hv9"/>
+                        <constraint firstItem="6jW-fD-8v5" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="XiZ-Sz-N4f" secondAttribute="trailing" id="7Ay-rw-UsD"/>
                         <constraint firstItem="XiZ-Sz-N4f" firstAttribute="leading" secondItem="EQh-kw-4kP" secondAttribute="leading" id="Ags-i0-ouE"/>
-                        <constraint firstAttribute="trailing" secondItem="VIz-Tm-SfA" secondAttribute="trailing" id="CL8-Qv-uXf"/>
+                        <constraint firstAttribute="trailing" secondItem="6jW-fD-8v5" secondAttribute="trailing" id="C5K-fe-fxo"/>
                         <constraint firstAttribute="bottom" secondItem="XiZ-Sz-N4f" secondAttribute="bottom" id="IGg-gn-e5I"/>
+                        <constraint firstItem="6jW-fD-8v5" firstAttribute="top" secondItem="EQh-kw-4kP" secondAttribute="top" id="IMf-kk-d6V"/>
+                        <constraint firstAttribute="bottom" secondItem="6jW-fD-8v5" secondAttribute="bottom" id="MVP-Fr-V3o"/>
                         <constraint firstItem="VIz-Tm-SfA" firstAttribute="leading" secondItem="EQh-kw-4kP" secondAttribute="leading" id="OeK-Dn-hrc"/>
+                        <constraint firstItem="6jW-fD-8v5" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="EQh-kw-4kP" secondAttribute="leading" id="RF4-Si-KpI"/>
                         <constraint firstItem="VIz-Tm-SfA" firstAttribute="top" secondItem="EQh-kw-4kP" secondAttribute="top" constant="4" id="ZXe-z1-Via"/>
                         <constraint firstItem="XiZ-Sz-N4f" firstAttribute="top" secondItem="VIz-Tm-SfA" secondAttribute="bottom" constant="4" id="brh-cl-Pft"/>
+                        <constraint firstItem="6jW-fD-8v5" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="VIz-Tm-SfA" secondAttribute="trailing" id="flN-FS-kmC"/>
                     </constraints>
                 </view>
                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Yx1-xj-ocK" customClass="IconButton" customModule="Material">
@@ -56,17 +80,21 @@
                     </userDefinedRuntimeAttributes>
                 </button>
                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Q39-Jx-L8R" customClass="IconButton" customModule="Material">
-                    <rect key="frame" x="327" y="4" width="48" height="48"/>
+                    <rect key="frame" x="375" y="4" width="0.0" height="48"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="48" id="Jio-ul-x4e"/>
-                        <constraint firstAttribute="width" constant="48" id="SzR-v9-QKe"/>
+                        <constraint firstAttribute="width" id="SzR-v9-QKe"/>
                     </constraints>
                     <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    <state key="normal" image="ic_search"/>
                     <userDefinedRuntimeAttributes>
                         <userDefinedRuntimeAttribute type="color" keyPath="pulseColor">
                             <color key="value" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         </userDefinedRuntimeAttribute>
                     </userDefinedRuntimeAttributes>
+                    <connections>
+                        <action selector="BtnSearchPressed" destination="iN0-l3-epB" eventType="touchUpInside" id="Keg-t6-uAG"/>
+                    </connections>
                 </button>
             </subviews>
             <color key="backgroundColor" red="1" green="0.3411764706" blue="0.1333333333" alpha="1" colorSpace="calibratedRGB"/>
@@ -75,7 +103,7 @@
                 <constraint firstItem="Q39-Jx-L8R" firstAttribute="centerY" secondItem="iN0-l3-epB" secondAttribute="centerY" id="Lik-o6-Va4"/>
                 <constraint firstItem="Q39-Jx-L8R" firstAttribute="leading" secondItem="EQh-kw-4kP" secondAttribute="trailing" id="PbZ-94-DOC"/>
                 <constraint firstAttribute="trailing" secondItem="Q39-Jx-L8R" secondAttribute="trailing" id="RjE-Fb-Dra"/>
-                <constraint firstItem="EQh-kw-4kP" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="iN0-l3-epB" secondAttribute="leading" constant="8" id="S7P-dE-EW3"/>
+                <constraint firstItem="EQh-kw-4kP" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="iN0-l3-epB" secondAttribute="leading" constant="16" id="S7P-dE-EW3"/>
                 <constraint firstItem="EQh-kw-4kP" firstAttribute="leading" secondItem="Yx1-xj-ocK" secondAttribute="trailing" id="fDg-0k-q9V"/>
                 <constraint firstItem="Yx1-xj-ocK" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="ihX-ip-U1p"/>
                 <constraint firstItem="EQh-kw-4kP" firstAttribute="top" relation="greaterThanOrEqual" secondItem="iN0-l3-epB" secondAttribute="top" id="jK9-D1-utz"/>
@@ -86,15 +114,19 @@
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
             <connections>
                 <outlet property="btnBack" destination="Yx1-xj-ocK" id="kyb-qP-N7p"/>
-                <outlet property="btnRight" destination="Q39-Jx-L8R" id="nM0-V2-uZ5"/>
+                <outlet property="btnSearch" destination="Q39-Jx-L8R" id="ziH-f2-c9c"/>
                 <outlet property="constraintBtnBack" destination="nMB-J0-MFs" id="J7E-Ap-Yge"/>
+                <outlet property="constraintBtnSearch" destination="SzR-v9-QKe" id="IqM-h5-hpe"/>
+                <outlet property="constraintSearchBar" destination="F6I-dM-vnH" id="Sjw-Wx-NiT"/>
                 <outlet property="lblDetail" destination="XiZ-Sz-N4f" id="yOU-jw-xGK"/>
                 <outlet property="lblTitle" destination="VIz-Tm-SfA" id="WdT-Uu-wZf"/>
+                <outlet property="txtSearchField" destination="6jW-fD-8v5" id="ZA7-eq-jia"/>
             </connections>
             <point key="canvasLocation" x="26.5" y="52"/>
         </view>
     </objects>
     <resources>
         <image name="ic_arrow_back" width="24" height="24"/>
+        <image name="ic_search" width="24" height="24"/>
     </resources>
 </document>
