@@ -11,7 +11,7 @@ import Firebase
 import SDWebImage
 import Spotify
 
-class PartySearchViewController: MaterialViewController, UITableViewDelegate, UITableViewDataSource, UISearchResultsUpdating {
+class PartySearchViewController: MaterialViewController, UITableViewDelegate, UITableViewDataSource {
     
     let FIREBASE_DATABASE_TABLE_PARTIES = "parites"
     
@@ -30,18 +30,11 @@ class PartySearchViewController: MaterialViewController, UITableViewDelegate, UI
     }
     
     var parties: [Party] = [Party]()
-
-    override var showAppBarShadow: Bool {
-        get { return false }
-        set { }
-    }
-    
     
     override var showBtnSearch: Bool {
         get { return true }
         set { }
     }
-    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -138,8 +131,8 @@ class PartySearchViewController: MaterialViewController, UITableViewDelegate, UI
         ControllerInterface.DoSegue(segueCommand: .ToParty, viewController: self, segueType: .Show, extraDataObject: parties[indexPath.row])
     }
     
-    // MARK: UISearchResultsUpdating
-    func updateSearchResults(for searchController: UISearchController) {
+    // MARK: AppBarViewDelegate
+    func appBarSearchDidChange(searchText: String) {
         
     }
 }

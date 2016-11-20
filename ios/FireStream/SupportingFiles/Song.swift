@@ -14,7 +14,7 @@ class Song {
     var artist: String = ""
     var album: String = ""
     var albumUrl: String = ""
-    var duration: String = ""
+    var duration: Int64 = 0
     
     init(dict: [String: Any]) {
         if let val = dict["id"] as? String {
@@ -33,7 +33,7 @@ class Song {
             self.albumUrl = val
         }
         if let val = dict["duration"] as? Int64 {
-            self.duration = TimeInterval(val.msToSeconds).minuteSecond
+            self.duration = val
         }
     }
 

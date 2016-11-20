@@ -47,7 +47,7 @@
                                 </userDefinedRuntimeAttribute>
                             </userDefinedRuntimeAttributes>
                             <connections>
-                                <action selector="textFieldDidChangeWithTextField:" destination="iN0-l3-epB" eventType="editingChanged" id="S4Z-rZ-pPu"/>
+                                <action selector="textFieldDidChange:" destination="iN0-l3-epB" eventType="editingChanged" id="LIx-VR-qQe"/>
                             </connections>
                         </textField>
                     </subviews>

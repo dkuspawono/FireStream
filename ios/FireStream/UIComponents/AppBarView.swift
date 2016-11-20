@@ -33,16 +33,19 @@ open class AppBarView: UIView {
         isSearchActive = !isSearchActive
     }
     
-    @IBAction func textFieldDidChange(textField: UITextField) {
+    @IBAction func textFieldDidChange(_ textField: UITextField) {
         delegate?.appBarSearchDidChange?(searchText: textField.text ?? "")
     }
     
     var isSearchActive: Bool = false {
         didSet {
+            if oldValue == isSearchActive { return }
             constraintSearchBar.constant = isSearchActive ? self.frame.width - constraintBtnSearch.constant - constraintBtnBack.constant : 0
             if !isSearchActive {
                 txtSearchField.resignFirstResponder()
                 delegate?.appBarSearchDidChange?(searchText: "")
+            } else {
+                txtSearchField.becomeFirstResponder()
             }
             UIView.animate(withDuration: 0.2, animations: {
                 self.layoutIfNeeded()

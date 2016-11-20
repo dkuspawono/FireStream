@@ -111,6 +111,7 @@ class MaterialNavigationController: UINavigationController {
     func updateAppBar() {
         defaultAppBarView.title = viewControllers.last?.title
         defaultAppBarView.showBtnBack = viewControllers.count > 1
+        defaultAppBarView.isSearchActive = false
         if let materialController = viewControllers.last as? MaterialViewController {
             doShowShaddow = materialController.showAppBarShadow
             doShowAppBar = materialController.showAppBar

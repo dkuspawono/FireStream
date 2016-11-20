@@ -6,6 +6,7 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11523"/>
+        <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -18,11 +19,11 @@
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="L5E-Cs-PgT">
                     <rect key="frame" x="0.0" y="0.0" width="375" height="96"/>
                     <subviews>
-                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="STO-fl-OZP">
+                        <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="STO-fl-OZP">
                             <rect key="frame" x="16" y="16" width="64" height="64"/>
                             <constraints>
+                                <constraint firstAttribute="width" secondItem="STO-fl-OZP" secondAttribute="height" multiplier="1:1" id="HAA-m8-smv"/>
                                 <constraint firstAttribute="width" constant="64" id="eam-nO-Syb"/>
-                                <constraint firstAttribute="height" constant="64" id="u3y-15-fHY"/>
                             </constraints>
                         </imageView>
                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="DuA-HK-fnj">
@@ -47,20 +48,33 @@
                                 <constraint firstItem="Oau-5z-i1k" firstAttribute="leading" secondItem="DuA-HK-fnj" secondAttribute="leading" id="GMs-9R-hlk"/>
                                 <constraint firstAttribute="bottom" secondItem="mTD-jU-A4N" secondAttribute="bottom" id="Tg7-0x-P9y"/>
                                 <constraint firstItem="mTD-jU-A4N" firstAttribute="top" secondItem="Oau-5z-i1k" secondAttribute="bottom" constant="8" id="dML-wC-s6Y"/>
+                                <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="40" id="eLX-nU-gll"/>
                                 <constraint firstAttribute="trailing" secondItem="mTD-jU-A4N" secondAttribute="trailing" id="gqD-rs-VfY"/>
                                 <constraint firstAttribute="trailing" secondItem="Oau-5z-i1k" secondAttribute="trailing" id="msP-zY-IN7"/>
                             </constraints>
                         </view>
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="d9t-ih-ahI" customClass="IconButton" customModule="Material">
+                            <rect key="frame" x="327" y="32" width="32" height="32"/>
+                            <color key="backgroundColor" red="0.1294117719" green="0.58823531870000001" blue="0.9529411793" alpha="1" colorSpace="calibratedRGB"/>
+                            <constraints>
+                                <constraint firstAttribute="width" constant="32" id="OQ5-xY-Gkt"/>
+                                <constraint firstAttribute="height" constant="32" id="bI2-Cn-bT3"/>
+                            </constraints>
+                            <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            <state key="normal" image="ic_add"/>
+                        </button>
                     </subviews>
                     <constraints>
-                        <constraint firstItem="STO-fl-OZP" firstAttribute="centerY" secondItem="L5E-Cs-PgT" secondAttribute="centerY" id="65m-gy-aFp"/>
+                        <constraint firstItem="STO-fl-OZP" firstAttribute="centerY" secondItem="L5E-Cs-PgT" secondAttribute="centerY" priority="999" id="65m-gy-aFp"/>
                         <constraint firstItem="STO-fl-OZP" firstAttribute="leading" secondItem="L5E-Cs-PgT" secondAttribute="leading" constant="16" id="CGp-35-fiV"/>
                         <constraint firstItem="STO-fl-OZP" firstAttribute="top" secondItem="L5E-Cs-PgT" secondAttribute="top" constant="16" id="Grt-mC-oHC"/>
                         <constraint firstItem="DuA-HK-fnj" firstAttribute="leading" secondItem="STO-fl-OZP" secondAttribute="trailing" constant="14" id="Ht0-HW-Rg2"/>
-                        <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="DuA-HK-fnj" secondAttribute="trailing" constant="16" id="KCV-DE-wF5"/>
                         <constraint firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="DuA-HK-fnj" secondAttribute="bottom" constant="16" id="SXt-xY-M9f"/>
-                        <constraint firstAttribute="bottom" secondItem="STO-fl-OZP" secondAttribute="bottom" constant="16" id="WIs-qR-ZLx"/>
+                        <constraint firstAttribute="bottom" secondItem="STO-fl-OZP" secondAttribute="bottom" priority="999" constant="16" id="WIs-qR-ZLx"/>
+                        <constraint firstItem="d9t-ih-ahI" firstAttribute="centerY" secondItem="L5E-Cs-PgT" secondAttribute="centerY" id="Wf1-az-B2A"/>
                         <constraint firstItem="DuA-HK-fnj" firstAttribute="top" secondItem="L5E-Cs-PgT" secondAttribute="top" constant="13" id="emt-YW-OEu"/>
+                        <constraint firstAttribute="trailing" secondItem="d9t-ih-ahI" secondAttribute="trailing" constant="16" id="fq7-SH-cVt"/>
+                        <constraint firstItem="d9t-ih-ahI" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="DuA-HK-fnj" secondAttribute="trailing" id="zkQ-Y5-OtQ"/>
                     </constraints>
                 </view>
             </subviews>
@@ -82,10 +96,18 @@
                 </userDefinedRuntimeAttribute>
             </userDefinedRuntimeAttributes>
             <connections>
+                <outlet property="btnAdd" destination="d9t-ih-ahI" id="4GE-Pv-ibb"/>
+                <outlet property="constraintBtnWidth" destination="OQ5-xY-Gkt" id="DqD-bN-BfO"/>
+                <outlet property="constraintImageMargin" destination="CGp-35-fiV" id="sv4-CO-23f"/>
+                <outlet property="constraintImageWidth" destination="eam-nO-Syb" id="HQl-ik-M8M"/>
                 <outlet property="imgAlbumArt" destination="STO-fl-OZP" id="Zei-Et-qJL"/>
                 <outlet property="lblInfo" destination="mTD-jU-A4N" id="Fep-GB-Od5"/>
                 <outlet property="lblName" destination="Oau-5z-i1k" id="imG-YC-5Gs"/>
             </connections>
+            <point key="canvasLocation" x="26.5" y="52"/>
         </view>
     </objects>
+    <resources>
+        <image name="ic_add" width="24" height="24"/>
+    </resources>
 </document>

@@ -17,6 +17,7 @@ class Party {
     var hostId: String = ""
     var hostName: String = ""
     var attendees: Int = 0
+    var progress: Int64 = 0
     
     init(dict: [String: Any]) {
         if let val = dict["id"] as? String {
@@ -42,6 +43,9 @@ class Party {
         }
         if let val = dict["attendees"] as? Int {
             attendees = val
+        }
+        if let val = dict["progress"] as? Int64 {
+            progress = val
         }
     }
 }

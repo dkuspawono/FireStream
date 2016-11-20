@@ -18,6 +18,8 @@
 		8A695D861DE0B9A00044396E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A695D841DE0B9A00044396E /* AppDelegate.swift */; };
 		8A695D881DE0B9CB0044396E /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A695D871DE0B9CB0044396E /* Extensions.swift */; };
 		8A695D8A1DE0C7DB0044396E /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 8A695D891DE0C7DB0044396E /* Info.plist */; };
+		8A78E7F81DE159210037756C /* RequestSongViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A78E7F71DE159210037756C /* RequestSongViewController.swift */; };
+		8A78E7FA1DE1630A0037756C /* SeekBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A78E7F91DE1630A0037756C /* SeekBar.swift */; };
 		8AA4CDC51DE10B3F004A7DA5 /* FloatLabelTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AA4CDC41DE10B3F004A7DA5 /* FloatLabelTextField.swift */; };
 		8AA4CDC71DE10C23004A7DA5 /* CreatePartyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AA4CDC61DE10C23004A7DA5 /* CreatePartyViewController.swift */; };
 		8AA4CDC91DE10CBB004A7DA5 /* ControllerInterface.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AA4CDC81DE10CBB004A7DA5 /* ControllerInterface.swift */; };
@@ -50,6 +52,8 @@
 		8A695D841DE0B9A00044396E /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		8A695D871DE0B9CB0044396E /* Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		8A695D891DE0C7DB0044396E /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		8A78E7F71DE159210037756C /* RequestSongViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RequestSongViewController.swift; sourceTree = "<group>"; };
+		8A78E7F91DE1630A0037756C /* SeekBar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SeekBar.swift; sourceTree = "<group>"; };
 		8AA4CDC41DE10B3F004A7DA5 /* FloatLabelTextField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FloatLabelTextField.swift; sourceTree = "<group>"; };
 		8AA4CDC61DE10C23004A7DA5 /* CreatePartyViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CreatePartyViewController.swift; sourceTree = "<group>"; };
 		8AA4CDC81DE10CBB004A7DA5 /* ControllerInterface.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ControllerInterface.swift; sourceTree = "<group>"; };
@@ -137,6 +141,7 @@
 				8A695D751DE0B59D0044396E /* PartySearchViewController.swift */,
 				8AA4CDC61DE10C23004A7DA5 /* CreatePartyViewController.swift */,
 				8ADD42511DE12F33007BB38E /* PartyViewController.swift */,
+				8A78E7F71DE159210037756C /* RequestSongViewController.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -153,6 +158,7 @@
 				8AB870581DE102890057ED2A /* AppBarView.xib */,
 				8AA4CDC41DE10B3F004A7DA5 /* FloatLabelTextField.swift */,
 				8AA4CDD01DE118A1004A7DA5 /* PopUp.swift */,
+				8A78E7F91DE1630A0037756C /* SeekBar.swift */,
 			);
 			path = UIComponents;
 			sourceTree = "<group>";
@@ -339,6 +345,7 @@
 				8AA4CDCB1DE112DC004A7DA5 /* Song.swift in Sources */,
 				8AB870531DE0EBA30057ED2A /* MaterialNavigationController.swift in Sources */,
 				8ADD42521DE12F33007BB38E /* PartyViewController.swift in Sources */,
+				8A78E7FA1DE1630A0037756C /* SeekBar.swift in Sources */,
 				8A695D881DE0B9CB0044396E /* Extensions.swift in Sources */,
 				8A695D7E1DE0B8870044396E /* SongTableViewCell.swift in Sources */,
 				8A695D7C1DE0B8790044396E /* PartyTableViewCell.swift in Sources */,
@@ -353,6 +360,7 @@
 				8AB8704D1DE0CED20057ED2A /* Party.swift in Sources */,
 				8AA4CDC51DE10B3F004A7DA5 /* FloatLabelTextField.swift in Sources */,
 				8A695D761DE0B59D0044396E /* PartySearchViewController.swift in Sources */,
+				8A78E7F81DE159210037756C /* RequestSongViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

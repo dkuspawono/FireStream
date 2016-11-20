@@ -18,6 +18,7 @@ public enum SegueCommand {
     case ToCreateParty
     case ToPartySearch
     case ToParty
+    case ToRequestSong
     
     
     var identifier: String {
@@ -25,6 +26,7 @@ public enum SegueCommand {
         case .ToCreateParty: return "CreatePartyViewController"
         case .ToPartySearch: return "PartySearchViewController"
         case .ToParty: return "PartyViewController"
+        case .ToRequestSong: return "RequestSongViewController"
         }
     }
     
