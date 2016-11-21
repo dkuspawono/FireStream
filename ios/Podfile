@@ -1,0 +1,14 @@
+# Uncomment the next line to define a global platform for your project
+# platform :ios, '9.0'
+
+target 'FireStream' do
+  use_frameworks!
+  # Pods for FireStream
+  pod 'Firebase/Core'
+  pod 'Firebase/Messaging'
+  pod 'Firebase/Database'
+  pod 'Material', :git => 'https://github.com/CosmicMind/Material.git', :branch => 'development';
+  pod 'SDWebImage'
+  pod 'Spotify-iOS-SDK'
+  pod 'MKDropdownMenu'
+end

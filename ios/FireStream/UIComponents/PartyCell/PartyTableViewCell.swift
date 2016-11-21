@@ -7,12 +7,29 @@
 //
 
 import UIKit
+import Material
 
-class PartyTableViewCell: UITableViewCell {
+class PartyTableViewCell: TableViewCell {
+    @IBOutlet weak var imgAlbumArt: UIImageView!
+    @IBOutlet weak var lblName: UILabel!
+    @IBOutlet weak var lblHost: UILabel!
+    @IBOutlet weak var lblAttendees: UILabel!
+    @IBOutlet weak var imgPeople: UIImageView!
+    @IBOutlet weak var imgLock: UIImageView!
+    @IBOutlet weak var constraintImgLock: NSLayoutConstraint!
+    
+    var showLock: Bool = false {
+        didSet {
+            constraintImgLock.constant = showLock ? 24 : 0
+            imgLock.isHidden = !showLock
+        }
+    }
 
     override func awakeFromNib() {
         super.awakeFromNib()
-        // Initialization code
+        imgPeople.image = imgPeople.image?.withRenderingMode(.alwaysTemplate)
+        imgLock.image = imgLock.image?.withRenderingMode(.alwaysTemplate)
+        showLock = showLock ? true : false
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {
